@@ -143,7 +143,24 @@ const Index = () => {
               imageType={settings.imageType}
             />
             
-            <ResultsPanel results={results} />
+            {/* Show a compact empty-results placeholder when there are no results */}
+            {results.length === 0 ? (
+              <div className="bg-card rounded-lg border border-border p-6 text-center">
+                <div className="max-w-[640px] mx-auto">
+                  <div className="p-6">
+                    <div className="text-center">
+                      <div className="inline-block rounded bg-secondary/50 p-4 mb-3">
+                        <svg className="h-10 w-10 text-muted-foreground" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 7h10v10H7z" stroke="currentColor" strokeWidth="1.2"/></svg>
+                      </div>
+                      <p className="text-primary text-base mb-1">Your generated results will appear here.</p>
+                      <p className="text-sm text-muted-foreground">Upload some files and click "Generate All" to get started.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <ResultsPanel results={results} />
+            )}
           </div>
         </div>
       </main>
