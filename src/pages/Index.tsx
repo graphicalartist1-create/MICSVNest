@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import GenerationControls from "@/components/GenerationControls";
 import FileUpload from "@/components/FileUpload";
 import ResultsPanel from "@/components/ResultsPanel";
 import ExportDialog from "@/components/ExportDialog";
+import MetadataGeneratedDialog from "@/components/MetadataGeneratedDialog";
 import { generateMetadataForFile, generatePromptForFile } from "@/lib/generator";
 import HowToUseButton from "@/components/HowToUseButton";
 import DeveloperBadge from "@/components/DeveloperBadge";
@@ -76,6 +77,20 @@ const Index = () => {
   const [results, setResults] = useState<Result[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showExportDialog, setShowExportDialog] = useState(false);
+  const [showMetadataGeneratedDialog, setShowMetadataGeneratedDialog] = useState(false);
+
+  useEffect(() => {
+    // Check if user doesn't want to see the dialog again
+    const dontShow = localStorage.getItem("dontShowMetadataGenerated");
+    // Dialog will be shown only if this is not set to "true"
+  }, []);
+
+  const handleShowMetadataDialog = () => {
+    const dontShow = localStorage.getItem("dontShowMetadataGenerated");
+    if (dontShow !== "true") {
+      setShowMetadataGeneratedDialog(true);
+    }
+  };
 
   const handleGenerate = async () => {
     if (files.length === 0) return;
@@ -101,6 +116,7 @@ const Index = () => {
       setTimeout(() => {
         setResults(generated);
         setIsGenerating(false);
+        handleShowMetadataDialog();
       }, 600);
     } catch (e) {
       // Fallback: restore previous stub behavior on error
@@ -175,6 +191,13 @@ const Index = () => {
         onOpenChange={setShowExportDialog}
         results={results}
         files={files}
+      />
+
+      <MetadataGeneratedDialog
+        open={showMetadataGeneratedDialog}
+        onOpenChange={setShowMetadataGeneratedDialog}
+        onExportCSV={handleExport}
+        isVectorFile={settings.imageType === "vector"}
       />
 
       <HowToUseButton />
