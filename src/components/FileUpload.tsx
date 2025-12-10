@@ -49,23 +49,24 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
   return (
     <div className="bg-card rounded-lg border border-border overflow-hidden h-full flex flex-col">
       {/* Header */}
-      <div className="px-4 py-2 border-b border-border">
-        <h2 className="text-base font-semibold text-foreground">Upload Files</h2>
+      <div className="p-4 border-b border-border">
+        <h2 className="text-lg font-semibold text-foreground">Upload Files</h2>
       </div>
 
       {/* Sign In Alert */}
-      <div className="px-4 py-2">
-        <Alert className="bg-primary/10 border-primary/30 py-2 px-3">
-          <LogIn className="h-3 w-3 text-primary" />
-          <AlertDescription className="text-primary text-xs">
+      <div className="px-4 pt-4">
+        <Alert className="bg-primary/10 border-primary/30">
+          <LogIn className="h-4 w-4 text-primary" />
+          <AlertDescription className="text-primary">
             <span className="font-medium">Sign In Required</span>
-            <span className="text-xs opacity-80"> — Please sign in to upload files.</span>
+            <br />
+            <span className="text-sm opacity-80">Please sign in to upload files and use generation features.</span>
           </AlertDescription>
         </Alert>
       </div>
 
       {/* Upload Area */}
-      <div className="px-4 py-2 flex-1">
+      <div className="p-4 flex-1">
         <input
           type="file"
           multiple
@@ -80,16 +81,16 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          className={`border-2 border-dashed rounded-lg p-4 text-center transition-all h-full min-h-[180px] flex flex-col items-center justify-center cursor-pointer select-none ${
+          className={`border-2 border-dashed rounded-lg p-8 text-center transition-all h-full min-h-[300px] flex flex-col items-center justify-center cursor-pointer select-none ${
             isDragging
               ? "border-primary bg-primary/5 shadow-lg"
               : "border-border hover:border-primary/10 hover:shadow-md"
           }`}
         >
-          <Upload className="h-10 w-10 text-muted-foreground mb-2" />
+          <Upload className="h-16 w-16 text-muted-foreground mb-4" />
 
           {/* File Type Tabs */}
-          <div className="flex gap-2 mb-2">
+          <div className="flex gap-2 mb-4">
             {fileTypes.map((type) => (
               <button
                 key={type}
@@ -105,10 +106,10 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
             ))}
           </div>
 
-          <p className="text-foreground mb-1 font-semibold text-sm">
+          <p className="text-foreground mb-2 font-semibold">
             Drag & drop files here, or click anywhere to select
           </p>
-          <p className="text-xs text-muted-foreground mb-2">
+          <p className="text-sm text-muted-foreground mb-4">
             Supports common image, video, SVG, and EPS formats. Max 500 files.
           </p>
 
@@ -121,36 +122,36 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
       </div>
 
       {/* API Warning */}
-      <div className="px-4 py-1">
-        <div className="flex items-center gap-2 text-destructive text-xs">
-          <AlertCircle className="h-3 w-3" />
+      <div className="px-4 pb-4">
+        <div className="flex items-center gap-2 text-destructive text-sm">
+          <AlertCircle className="h-4 w-4" />
           <span>No Google Gemini API keys. Add keys in settings.</span>
         </div>
       </div>
 
       {/* Action Buttons */}
-      <div className="px-4 py-2 border-t border-border flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 text-destructive text-xs">
-          <AlertCircle className="h-3 w-3" />
-          <span>No API keys.</span>
+      <div className="p-4 border-t border-border flex items-center justify-between">
+        <div className="flex items-center gap-2 text-destructive text-sm">
+          <AlertCircle className="h-4 w-4" />
+          <span>No Google Gemini API keys. Add keys in settings.</span>
         </div>
-        <div className="flex gap-1">
-          <Button variant="outline" onClick={clearAll} className="gap-1 text-xs h-8">
-            <Trash2 className="h-3 w-3" />
-            Clear
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={clearAll} className="gap-2">
+            <Trash2 className="h-4 w-4" />
+            Clear All
           </Button>
           <Button 
             variant="outline" 
             onClick={onGenerate} 
             disabled={files.length === 0 || isGenerating}
-            className="gap-1 text-xs h-8 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+            className="gap-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
           >
-            <Sparkles className="h-3 w-3" />
-            {isGenerating ? "Generating..." : "Generate"}
+            <Sparkles className="h-4 w-4" />
+            {isGenerating ? "Generating..." : "Generate All"}
           </Button>
-          <Button variant="outline" onClick={onExport} className="gap-1 text-xs h-8">
-            <Download className="h-3 w-3" />
-            {imageType === "vector" ? "Vector" : "CSV"}
+          <Button variant="outline" onClick={onExport} className="gap-2">
+            <Download className="h-4 w-4" />
+            {imageType === "vector" ? "Export Vector Package" : "Export CSV"}
           </Button>
         </div>
       </div>
