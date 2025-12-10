@@ -88,89 +88,171 @@ const ApiSecretsModal: React.FC = () => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent>
+      <DialogContent className="max-w-4xl">
         <DialogHeader>
-          <DialogTitle>API Secrets Management</DialogTitle>
-          <DialogDescription>Manage your AI provider API keys. Keys are stored locally and securely.</DialogDescription>
+          <DialogTitle className="text-2xl">API Secrets Management</DialogTitle>
+          <DialogDescription className="text-base">Manage your AI provider API keys. Keys are stored locally and securely.</DialogDescription>
         </DialogHeader>
 
-        <div className="mt-4 grid grid-cols-2 gap-4">
+        <div className="mt-6 space-y-6">
+          {/* Provider Selection */}
           <div>
-            <p className="text-sm mb-2">Select AI Provider</p>
-            <div className="flex gap-3 flex-wrap mb-4">
+            <p className="text-base font-medium mb-4">Select AI Provider</p>
+            <div className="flex gap-3 flex-wrap">
               {providers.map((p) => (
                 <button
                   key={p.id}
                   onClick={() => setSelected(p.id)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-md border transition ${selected === p.id ? "bg-cyan-500 text-black" : "bg-[#0b1013] border-[#232b30] text-muted-foreground"}`}>
-                  <span className="h-5 w-5 rounded-sm bg-[#0b1013] flex items-center justify-center text-xs">{p.name.split(' ')[0][0]}</span>
-                  <span className="text-sm">{p.name}</span>
-                  {p.badge && <span className="ml-2 text-xs bg-orange-500 rounded-full px-2 py-0.5">{p.badge}</span>}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg border-2 transition ${
+                    selected === p.id 
+                      ? "bg-cyan-500 border-cyan-500 text-black" 
+                      : "bg-[#0b1013] border-[#232b30] text-muted-foreground hover:border-[#3a4450]"
+                  }`}>
+                  <span className="h-6 w-6 rounded-md bg-opacity-20 flex items-center justify-center text-sm font-bold">
+                    {p.name.split(' ')[0].charAt(0)}
+                  </span>
+                  <span className="text-sm font-medium">{p.name}</span>
+                  {p.badge && <span className="ml-auto text-xs bg-orange-500 rounded-full px-3 py-1 font-medium">{p.badge}</span>}
                 </button>
               ))}
             </div>
-
-            {/* Form */}
-            {selected ? (
-              <div className="space-y-3">
-                <label className="text-xs text-muted-foreground uppercase">Select Model</label>
-                <Select value={model} onValueChange={(v) => setModel(v)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select model" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {modelsFor(selected).map((m) => (
-                      <SelectItem key={m} value={m}>{m}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                <label className="text-xs text-muted-foreground uppercase">API Key</label>
-                <div className="flex gap-2">
-                  <Input placeholder={`Enter ${providers.find((x) => x.id === selected)?.name} API key`} value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
-                  <Button onClick={saveKey}>Save</Button>
-                </div>
-
-                <p className="text-xs text-muted-foreground">Keys are saved to your browser's local storage. For stronger security, consider encryption or server-side storage.</p>
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">Select a provider to configure its API keys.</p>
-            )}
           </div>
 
-          <div>
-            <p className="text-sm mb-2">Stored Keys {selected ? `(${storedKeys.length})` : ""}</p>
-            <div className="h-64 rounded-md border border-border bg-card p-3 overflow-auto">
+          {/* Configuration and Stored Keys Grid */}
+          <div className="grid grid-cols-2 gap-6">
+            {/* Left: Form */}
+            <div>
               {selected ? (
-                storedKeys.length > 0 ? (
-                  <div className="space-y-3">
-                    {storedKeys.map((k) => (
-                      <div key={k.id} className="flex items-center justify-between bg-[#0b0f11] rounded-md p-3">
+                <div className="bg-[#0b0f11] rounded-lg border border-border p-6 space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">
+                      {providers.find((x) => x.id === selected)?.name} Configuration
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      {selected === "google" && "Google's advanced AI model for text and image analysis"}
+                      {selected === "mistral" && "Mistral's powerful language models"}
+                      {selected === "openai" && "OpenAI's state-of-the-art models"}
+                      {selected === "openrouter" && "OpenRouter's multi-model routing platform"}
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm font-medium block mb-2">Select Model</label>
+                      <Select value={model} onValueChange={(v) => setModel(v)}>
+                        <SelectTrigger className="bg-[#0b1013] border-[#232b30]">
+                          <SelectValue placeholder="Select model" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {modelsFor(selected).map((m) => (
+                            <SelectItem key={m} value={m}>{m}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {selected === "google" && model === "Gemini 2.5 Flash-Lite Preview" && (
+                        <p className="text-xs text-cyan-400 mt-2">ℹ️ This model supports image analysis</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-medium block mb-2">{providers.find((x) => x.id === selected)?.name} API Keys</label>
+                      <p className="text-xs text-muted-foreground mb-3">
+                        {selected === "google" && 'Gemini API keys should start with "Aiza"'}
+                        {selected === "mistral" && "32-33 character Mistral API key"}
+                        {selected === "openai" && "OpenAI API key starting with sk-"}
+                        {selected === "openrouter" && "OpenRouter API key starting with sk-or-"}
+                      </p>
+                      <div className="flex gap-2 mb-3">
+                        <Input 
+                          placeholder={`Enter ${providers.find((x) => x.id === selected)?.name} API key`} 
+                          value={apiKey} 
+                          onChange={(e) => setApiKey(e.target.value)}
+                          className="bg-[#0b1013] border-[#232b30]"
+                          type="password"
+                        />
+                        <Button onClick={saveKey} className="bg-cyan-500 hover:bg-cyan-600 text-black font-medium">Save</Button>
+                      </div>
+
+                      {selected === "google" && (
+                        <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-xs text-cyan-400 hover:underline flex items-center gap-1">
+                          🔗 Get Google Gemini API Key
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-[#0b0f11] rounded-lg border border-border p-6 h-full flex items-center justify-center">
+                  <p className="text-muted-foreground text-center">Select a provider to configure its API keys.</p>
+                </div>
+              )}
+            </div>
+
+            {/* Right: Stored Keys */}
+            <div>
+              <div className="bg-[#0b0f11] rounded-lg border border-border p-6">
+                <h3 className="text-lg font-semibold mb-4">
+                  Stored Keys {selected ? `(${storedKeys.length})` : ""}
+                </h3>
+                <div className="h-80 overflow-y-auto pr-2 space-y-3">
+                  {selected ? (
+                    storedKeys.length > 0 ? (
+                      <>
+                        {storedKeys.map((k) => (
+                          <div key={k.id} className="bg-[#161b1f] rounded-lg p-4 border border-[#232b30]">
+                            <div className="flex items-start justify-between mb-2">
+                              <div>
+                                <div className="font-semibold text-sm">{k.model}</div>
+                                <div className="text-xs text-muted-foreground font-mono mt-1">{maskKey(k.key)}</div>
+                                <div className="text-xs text-muted-foreground mt-2">Added: {new Date(k.createdAt).toLocaleDateString()}</div>
+                              </div>
+                            </div>
+                            <div className="flex gap-2 mt-3">
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="flex-1 text-xs"
+                                onClick={() => {
+                                  navigator.clipboard?.writeText(k.key);
+                                  // You can add a toast notification here
+                                }}
+                              >
+                                Copy
+                              </Button>
+                              <Button 
+                                variant="destructive" 
+                                size="sm" 
+                                className="flex-1 text-xs"
+                                onClick={() => deleteKey(k.id)}
+                              >
+                                Delete
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </>
+                    ) : (
+                      <div className="h-full flex items-center justify-center text-center">
                         <div>
-                          <div className="font-medium">{k.model}</div>
-                          <div className="text-xs text-muted-foreground">{maskKey(k.key)}</div>
-                          <div className="text-[11px] text-muted-foreground mt-1">Added: {new Date(k.createdAt).toLocaleString()}</div>
-                        </div>
-                        <div className="flex flex-col items-end gap-2">
-                          <Button variant="ghost" size="sm" onClick={() => navigator.clipboard?.writeText(k.key)}>Copy</Button>
-                          <Button variant="destructive" size="sm" onClick={() => deleteKey(k.id)}>Delete</Button>
+                          <p className="text-muted-foreground text-sm">No {providers.find((x) => x.id === selected)?.name} API keys stored yet.</p>
+                          <p className="text-muted-foreground text-xs mt-2">Add a key using the form on the left.</p>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="h-full flex items-center justify-center text-muted-foreground">No keys stored yet. Add a key using the form on the left.</div>
-                )
-              ) : (
-                <div className="h-full flex items-center justify-center text-muted-foreground">Select a provider to view stored keys.</div>
-              )}
+                    )
+                  ) : (
+                    <div className="h-full flex items-center justify-center text-center">
+                      <p className="text-muted-foreground text-sm">Select a provider to view stored keys.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-6 flex justify-end">
+        <div className="mt-8 flex justify-end">
           <DialogClose asChild>
-            <Button variant="outline">Close</Button>
+            <Button variant="outline" className="px-6">Close</Button>
           </DialogClose>
         </div>
       </DialogContent>
