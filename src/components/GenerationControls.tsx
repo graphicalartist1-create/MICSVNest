@@ -1,6 +1,4 @@
 import { useState } from "react";
-import adobeLogo from "@/assets/adobe-stock.svg";
-import shutterLogo from "@/assets/shutterstock.svg";
 import { Settings, Key, ChevronDown, ChevronUp, Type } from "lucide-react";
 import ApiSecretsModal from "@/components/ApiSecretsModal";
 import { Button } from "@/components/ui/button";
@@ -60,18 +58,16 @@ const PlatformIcon = ({ icon }: { icon: string }) => {
       );
     case "adobe":
       return (
-        <svg viewBox="0 0 24 24" className="h-6 w-6 mx-auto" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-          <rect x="3" y="3" width="18" height="18" rx="3" fill="#FF3B30" />
-          <path d="M7 17 L12 6 L17 17 H14.6 L12 11 L9.4 17 H7 Z" fill="#FFFFFF" />
+        <svg viewBox="0 0 24 24" className="h-6 w-6 mx-auto" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+          <path d="M7 17 L12 6 L17 17 H14.6 L12 11 L9.4 17 H7 Z" fill="currentColor" />
         </svg>
       );
     case "St":
     case "shutterstock":
       return (
-        <svg viewBox="0 0 24 24" className="h-6 w-6 mx-auto" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-          <rect x="3" y="3" width="18" height="18" rx="3" fill="#FF3B30" />
-          <rect x="7" y="8" width="10" height="6" rx="1" fill="#FFFFFF" />
-          <circle cx="12" cy="11" r="2" fill="#FF3B30" />
+        <svg viewBox="0 0 24 24" className="h-6 w-6 mx-auto" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+          <rect x="6" y="7" width="12" height="8" rx="1" stroke="currentColor" strokeWidth="1.5" />
+          <circle cx="12" cy="11" r="2" fill="currentColor" />
         </svg>
       );
     case "istock":
