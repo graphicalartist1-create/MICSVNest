@@ -150,14 +150,14 @@ const GenerationControls = ({ settings, onSettingsChange }: GenerationControlsPr
   return (
     <div className="bg-card rounded-lg border border-border overflow-hidden">
       {/* Header */}
-        <div className="p-4 flex items-center justify-between border-b border-border">
+      <div className="p-4 flex items-center justify-between border-b border-border">
         <div className="flex items-center gap-2">
           <Settings className="h-5 w-5 text-primary" />
           <span className="font-medium text-foreground">Generation Controls</span>
         </div>
-          <div>
-            {!isSignedIn && <ApiSecretsModal />}
-          </div>
+        <div>
+          {!isSignedIn && <ApiSecretsModal />}
+        </div>
       </div>
 
       {/* Tabs */}
@@ -186,6 +186,8 @@ const GenerationControls = ({ settings, onSettingsChange }: GenerationControlsPr
             Prompt
           </button>
         </div>
+        {/* Red bar below Clear All button */}
+        <div style={{ background: 'red', height: '16px', width: '100%', borderRadius: '4px', marginTop: '8px' }} />
       </div>
 
       {/* Advanced Controls */}

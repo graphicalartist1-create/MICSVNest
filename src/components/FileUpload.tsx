@@ -47,7 +47,7 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
   };
 
   return (
-    <div className="bg-card rounded-lg border border-border overflow-hidden h-full flex flex-col">
+    <div className="bg-card rounded-lg border border-border overflow-hidden h-full flex flex-col" style={{ position: 'relative' }}>
       {/* Header */}
       <div className="p-4 border-b border-border">
         <h2 className="text-lg font-semibold text-foreground">Upload Files</h2>
@@ -66,7 +66,7 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
       </div>
 
       {/* Upload Area */}
-      <div className="p-4 flex-1">
+      <div className="p-4 flex-1" style={{ position: 'relative' }}>
         <input
           type="file"
           multiple
@@ -86,7 +86,14 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
               ? "border-primary bg-primary/5 shadow-lg"
               : "border-border hover:border-primary/10 hover:shadow-md"
           }`}
+          style={{ zIndex: 2 }}
         >
+                  {/* Hide any direct child divs with red background (debug/test overlays) */}
+                  <style>{`
+                    .bg-card > div[style*='background-color: red'] {
+                      display: none !important;
+                    }
+                  `}</style>
           <Upload className="h-16 w-16 text-muted-foreground mb-4" />
 
           {/* File Type Tabs */}
