@@ -135,6 +135,7 @@ const Index = () => {
               onGenerate={handleGenerate}
               onExport={handleExport}
               isGenerating={isGenerating}
+              imageType={settings.imageType}
             />
             
             <ResultsPanel results={results} />
