@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Settings, Key, ChevronDown, ChevronUp, Type } from "lucide-react";
 import ApiSecretsModal from "@/components/ApiSecretsModal";
 import { Button } from "@/components/ui/button";
@@ -97,6 +97,34 @@ const PlatformIcon = ({ icon }: { icon: string }) => {
 const GenerationControls = ({ settings, onSettingsChange }: GenerationControlsProps) => {
   const [activeTab, setActiveTab] = useState<"metadata" | "prompt">("metadata");
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(true);
+
+  // Load saved settings from localStorage on mount
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = localStorage.getItem("generation:settings");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        // Only update if parsed is an object
+        if (parsed && typeof parsed === "object") {
+          onSettingsChange({ ...settings, ...parsed });
+        }
+      }
+    } catch (e) {
+      // ignore
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Save settings to localStorage whenever they change
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.setItem("generation:settings", JSON.stringify(settings));
+    } catch (e) {
+      // ignore
+    }
+  }, [settings]);
 
   const updateSetting = (key: string, value: any) => {
     onSettingsChange({ ...settings, [key]: value });
