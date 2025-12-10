@@ -57,13 +57,17 @@ const PlatformIcon = ({ icon }: { icon: string }) => {
       );
     case "adobe":
       return (
-        <svg viewBox="0 0 24 24" className="h-5 w-5 mx-auto" fill="none">
-          <path d="M12 3l-2 6h4l-2-6z" fill="currentColor" opacity="0.6"/>
-          <path d="M8 9l-3 9h3l1-3h2l-1-3H8z" fill="currentColor"/>
-          <path d="M16 9l3 9h-3l-1-3h-2l1-3h2z" fill="currentColor"/>
-          <circle cx="12" cy="6" r="1" fill="currentColor"/>
-          <circle cx="9" cy="4" r="0.5" fill="currentColor"/>
-          <circle cx="15" cy="4" r="0.5" fill="currentColor"/>
+        <svg viewBox="0 0 24 24" className="h-5 w-5 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none">
+          <rect width="24" height="24" rx="3" fill="#FF0000" />
+          <path d="M6 18L12 4l6 14h-3.5L12 8 9.5 18H6z" fill="#ffffff" />
+        </svg>
+      );
+    case "St":
+      return (
+        <svg viewBox="0 0 24 24" className="h-5 w-5 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none">
+          <rect width="24" height="24" rx="4" fill="#FF2B2B" />
+          <path d="M7.2 16.2c1.6-2 4.3-6 8.6-6 1.6 0 3.2.9 3.2 2.8 0 2.2-2.3 2.8-3.6 2.8-3.9 0-4.8-3.1-8.2-2.6z" fill="#ffffff" />
+          <path d="M12 7.1c1 0 1.8.8 1.8 1.8S13 10.7 12 10.7s-1.8-.8-1.8-1.8S11 7.1 12 7.1z" fill="#ffffff" opacity="0.95" />
         </svg>
       );
     case "istock":
