@@ -15,7 +15,7 @@ interface ResultsPanelProps {
 const ResultsPanel = ({ results }: ResultsPanelProps) => {
   if (results.length === 0) {
       return (
-        <div className="bg-card rounded-lg border border-border p-4 text-center">
+        <div className="text-center py-8">
           <ImageIcon className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
           <p className="text-primary text-base mb-1">Your generated results will appear here.</p>
           <p className="text-muted-foreground text-sm">Upload some files and click "Generate All" to get started.</p>
@@ -24,8 +24,8 @@ const ResultsPanel = ({ results }: ResultsPanelProps) => {
   }
 
   return (
-    <div className="bg-card rounded-lg border border-border overflow-hidden">
-      <div className="p-4 border-b border-border">
+    <div>
+      <div className="py-3 border-b border-border">
         <h3 className="font-semibold text-foreground">Generated Results ({results.length})</h3>
       </div>
       <div className="divide-y divide-border max-h-[400px] overflow-auto">

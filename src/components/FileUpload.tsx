@@ -47,14 +47,14 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
   };
 
   return (
-    <div className="bg-card rounded-lg border border-border overflow-hidden flex flex-col">
+    <div className="flex flex-col">
       {/* Header */}
-      <div className="p-3 border-b border-border">
+      <div className="py-3 border-b border-border">
         <h2 className="text-lg font-semibold text-foreground">Upload Files</h2>
       </div>
 
       {/* Sign In Alert */}
-      <div className="px-3 pt-3">
+      <div className="py-3">
         <Alert className="bg-primary/10 border-primary/30">
           <LogIn className="h-4 w-4 text-primary" />
           <AlertDescription className="text-primary">
@@ -66,7 +66,7 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
       </div>
 
       {/* Upload Area */}
-      <div className="p-3">
+      <div className="py-3">
         <input
           type="file"
           multiple
@@ -122,7 +122,7 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
       </div>
 
       {/* API Warning */}
-      <div className="px-3 pb-2">
+      <div className="py-2">
         <div className="flex items-center gap-2 text-destructive text-sm">
           <AlertCircle className="h-4 w-4" />
           <span>No Google Gemini API keys. Add keys in settings.</span>
@@ -130,7 +130,7 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
       </div>
 
       {/* Action Buttons */}
-      <div className="p-3 border-t border-border flex items-center justify-between">
+      <div className="py-3 border-t border-border flex items-center justify-between">
         <div className="flex items-center gap-2 text-destructive text-sm">
           <AlertCircle className="h-4 w-4" />
           <span>No Google Gemini API keys. Add keys in settings.</span>
