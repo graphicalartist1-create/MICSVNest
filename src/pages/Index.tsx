@@ -78,6 +78,9 @@ const Index = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [showExportDialog, setShowExportDialog] = useState(false);
   const [showMetadataGeneratedDialog, setShowMetadataGeneratedDialog] = useState(false);
+  const [generationProgress, setGenerationProgress] = useState(0);
+  const [showProgressBar, setShowProgressBar] = useState(false);
+  const [isStoppedByUser, setIsStoppedByUser] = useState(false);
 
   useEffect(() => {
     // Check if user doesn't want to see the dialog again
@@ -96,6 +99,22 @@ const Index = () => {
     if (files.length === 0) return;
     
     setIsGenerating(true);
+    setShowProgressBar(true);
+    setGenerationProgress(0);
+    setIsStoppedByUser(false);
+    
+    // Simulate progress bar
+    let currentProgress = 0;
+    const progressInterval = setInterval(() => {
+      if (isStoppedByUser) {
+        clearInterval(progressInterval);
+        return;
+      }
+      
+      currentProgress += Math.random() * 15;
+      if (currentProgress > 90) currentProgress = 90;
+      setGenerationProgress(Math.min(currentProgress, 99));
+    }, 200);
     
     // Generate metadata and prompts using local generator utilities.
     // This keeps generation deterministic and uses the current settings.
@@ -114,12 +133,18 @@ const Index = () => {
       });
       // Small delay to preserve UX (keep "Generating..." visible briefly)
       setTimeout(() => {
+        clearInterval(progressInterval);
+        setGenerationProgress(100);
         setResults(generated);
         setIsGenerating(false);
-        handleShowMetadataDialog();
+        setTimeout(() => {
+          setShowProgressBar(false);
+          handleShowMetadataDialog();
+        }, 800);
       }, 600);
     } catch (e) {
       // Fallback: restore previous stub behavior on error
+      clearInterval(progressInterval);
       const fallback: Result[] = files.map((file, i) => ({
         id: `${Date.now()}-${i}`,
         filename: file.name,
@@ -129,7 +154,15 @@ const Index = () => {
       }));
       setResults(fallback);
       setIsGenerating(false);
+      setShowProgressBar(false);
     }
+  };
+
+  const handleStopGeneration = () => {
+    setIsStoppedByUser(true);
+    setIsGenerating(false);
+    setShowProgressBar(false);
+    setGenerationProgress(0);
   };
 
   const handleExport = () => {
@@ -158,6 +191,39 @@ const Index = () => {
   return (
     <div className="bg-background">
       <Header />
+      
+      {/* Progress Bar Container */}
+      {showProgressBar && (
+        <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 border-b border-border">
+          <div className="px-6 py-4">
+            <div className="max-w-[1800px] mx-auto flex items-center justify-between gap-4">
+              <div className="flex-1">
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="text-sm font-medium text-foreground">Processing files: {generationProgress}%...</span>
+                </div>
+                <div className="w-full bg-secondary/30 h-2 rounded-full overflow-hidden">
+                  <div 
+                    style={{ width: `${generationProgress}%` }} 
+                    className="h-2 bg-cyan-400 transition-all duration-300 rounded-full"
+                  />
+                </div>
+              </div>
+              <button
+                onClick={handleStopGeneration}
+                className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-medium transition-colors flex-shrink-0"
+              >
+                Stop
+              </button>
+              <button
+                onClick={() => setShowProgressBar(false)}
+                className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-medium transition-colors flex-shrink-0"
+              >
+                Processing...
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       
       <main className="pt-20 px-6">
         <div className="flex gap-6 max-w-[1800px] mx-auto">
