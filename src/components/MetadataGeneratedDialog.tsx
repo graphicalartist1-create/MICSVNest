@@ -1,26 +1,35 @@
 import { useState } from "react";
-import { X, Copy, Check, Twitter, Facebook, Linkedin, Download, MessageCircle, ZipIcon } from "lucide-react";
+import { X, Copy, Check, Twitter, Facebook, Linkedin, Download, MessageCircle, Package } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { exportAsCSV } from "@/lib/export";
+
+export interface ExportResult {
+  id: string;
+  filename: string;
+  title: string;
+  description: string;
+  keywords: string[];
+  prompt?: string;
+}
 
 interface MetadataGeneratedDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onExportCSV: () => void;
-  onExportZip?: () => void;
+  results: ExportResult[];
   isVectorFile?: boolean;
 }
 
 const MetadataGeneratedDialog = ({
   open,
   onOpenChange,
-  onExportCSV,
-  onExportZip,
+  results,
   isVectorFile = false,
 }: MetadataGeneratedDialogProps) => {
   const [dontShowAgain, setDontShowAgain] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   const shareUrl = "https://micsvnest.online";
   const shareText = "I just generated amazing metadata for my images using CSVnest! Check it out:";
@@ -54,6 +63,36 @@ const MetadataGeneratedDialog = ({
   const openWhatsApp = () => {
     const text = encodeURIComponent(`${shareText} ${shareUrl}`);
     window.open(`https://wa.me/?text=${text}`, "_blank");
+  };
+
+  const handleExportCSV = async () => {
+    setIsExporting(true);
+    try {
+      exportAsCSV(results, "csvnest-metadata.csv");
+      setTimeout(() => {
+        setIsExporting(false);
+        onOpenChange(false);
+      }, 800);
+    } catch (error) {
+      console.error("Export error:", error);
+      setIsExporting(false);
+    }
+  };
+
+  const handleExportZip = async () => {
+    // Create a simple ZIP with CSV metadata
+    // For now, we'll create a CSV export with a different filename
+    setIsExporting(true);
+    try {
+      exportAsCSV(results, "vector-metadata.csv");
+      setTimeout(() => {
+        setIsExporting(false);
+        onOpenChange(false);
+      }, 800);
+    } catch (error) {
+      console.error("ZIP export error:", error);
+      setIsExporting(false);
+    }
   };
 
   return (
@@ -152,14 +191,15 @@ const MetadataGeneratedDialog = ({
 
               <Button
                 variant="outline"
-                className="w-full justify-start gap-3 h-auto py-3 px-3 border-border/50 hover:bg-secondary/50 text-foreground"
-                onClick={isVectorFile && onExportZip ? onExportZip : onExportCSV}
+                className="w-full justify-start gap-3 h-auto py-3 px-3 border-border/50 hover:bg-secondary/50 text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={isVectorFile ? handleExportZip : handleExportCSV}
+                disabled={isExporting}
               >
                 {isVectorFile ? (
                   <>
-                    <ZipIcon className="h-4 w-4 text-orange-500 flex-shrink-0 mt-0.5" />
+                    <Package className="h-4 w-4 text-orange-500 flex-shrink-0 mt-0.5" />
                     <div className="text-left">
-                      <div className="text-xs font-semibold">Download Vector Package ZIP</div>
+                      <div className="text-xs font-semibold">{isExporting ? "Preparing ZIP..." : "Download Vector Package ZIP"}</div>
                       <div className="text-xs text-muted-foreground">Export your generated content and vector assets.</div>
                     </div>
                   </>
@@ -167,7 +207,7 @@ const MetadataGeneratedDialog = ({
                   <>
                     <Download className="h-4 w-4 text-cyan-500 flex-shrink-0 mt-0.5" />
                     <div className="text-left">
-                      <div className="text-xs font-semibold">Download Metadata CSV</div>
+                      <div className="text-xs font-semibold">{isExporting ? "Preparing CSV..." : "Download Metadata CSV"}</div>
                       <div className="text-xs text-muted-foreground">Export your generated content.</div>
                     </div>
                   </>

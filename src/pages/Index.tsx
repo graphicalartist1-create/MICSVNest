@@ -196,7 +196,7 @@ const Index = () => {
       <MetadataGeneratedDialog
         open={showMetadataGeneratedDialog}
         onOpenChange={setShowMetadataGeneratedDialog}
-        onExportCSV={handleExport}
+        results={results}
         isVectorFile={settings.imageType === "vector"}
       />
 
