@@ -58,9 +58,21 @@ const PlatformIcon = ({ icon }: { icon: string }) => {
         </svg>
       );
     case "adobe":
-      return <img src={adobeLogo} alt="Adobe Stock" className="h-6 w-6 mx-auto object-contain" />;
+      return (
+        <svg viewBox="0 0 24 24" className="h-6 w-6 mx-auto" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+          <rect x="3" y="3" width="18" height="18" rx="3" fill="#FF3B30" />
+          <path d="M7 17 L12 6 L17 17 H14.6 L12 11 L9.4 17 H7 Z" fill="#FFFFFF" />
+        </svg>
+      );
     case "St":
-      return <img src={shutterLogo} alt="Shutterstock" className="h-6 w-6 mx-auto object-contain" />;
+    case "shutterstock":
+      return (
+        <svg viewBox="0 0 24 24" className="h-6 w-6 mx-auto" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+          <rect x="3" y="3" width="18" height="18" rx="3" fill="#FF3B30" />
+          <rect x="7" y="8" width="10" height="6" rx="1" fill="#FFFFFF" />
+          <circle cx="12" cy="11" r="2" fill="#FF3B30" />
+        </svg>
+      );
     case "istock":
       return (
         <svg viewBox="0 0 24 24" className="h-5 w-5 mx-auto" fill="none" stroke="currentColor" strokeWidth="2.5">
