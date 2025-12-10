@@ -157,27 +157,31 @@ const GenerationControls = ({ settings, onSettingsChange }: GenerationControlsPr
                 <label className="text-xs text-muted-foreground uppercase tracking-wider mb-3 block">
                   Export Platform
                 </label>
-                <div className="grid grid-cols-3 gap-2">
-                  {platforms.map((platform) => (
+                <div className="grid grid-cols-3 gap-3">
+                  {platforms.map((platform) => {
+                    const active = settings.platform === platform.id;
+                    return (
                       <button
                         key={platform.id}
                         onClick={() => updateSetting("platform", platform.id)}
-                        className={`p-2 rounded-lg border transition-all cursor-pointer flex flex-col items-center gap-2 text-center ${
-                          settings.platform === platform.id
-                            ? "border-primary bg-primary/5 shadow-inner"
-                            : "border-border bg-card hover:border-primary/20"
+                        aria-pressed={active}
+                        className={`flex flex-col items-center gap-2 justify-center p-3 rounded-lg transition-all cursor-pointer select-none min-h-[72px] ${
+                          active
+                            ? "border border-primary bg-primary/5 shadow-[0_0_0_4px_rgba(16,185,129,0.06)]"
+                            : "border border-border bg-card hover:shadow-md"
                         }`}
                       >
-                        <div className={`h-10 w-10 rounded-md flex items-center justify-center ${
-                          settings.platform === platform.id ? "bg-primary text-primary-foreground" : "bg-muted/10 text-muted-foreground"
+                        <div className={`h-12 w-12 rounded-md flex items-center justify-center ${
+                          active ? "bg-primary text-primary-foreground" : "bg-[#2f3a3f] text-[--muted-foreground]"
                         }`}>
                           <PlatformIcon icon={platform.icon} />
                         </div>
-                        <div className="text-xs font-medium text-muted-foreground">
-                          {platform.name === 'Shutterstock' ? 'St' : platform.name.split(' ')[0]}
+                        <div className={`text-xs font-medium ${active ? "text-primary" : "text-muted-foreground"}`}>
+                          {platform.name.split(' ')[0]}
                         </div>
                       </button>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
