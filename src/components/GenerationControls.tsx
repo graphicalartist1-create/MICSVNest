@@ -2,6 +2,7 @@ import { useState } from "react";
 import adobeLogo from "@/assets/adobe-stock.svg";
 import shutterLogo from "@/assets/shutterstock.svg";
 import { Settings, Key, ChevronDown, ChevronUp, Type } from "lucide-react";
+import ApiSecretsModal from "@/components/ApiSecretsModal";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
@@ -108,15 +109,14 @@ const GenerationControls = ({ settings, onSettingsChange }: GenerationControlsPr
   return (
     <div className="bg-card rounded-lg border border-border overflow-hidden">
       {/* Header */}
-      <div className="p-4 flex items-center justify-between border-b border-border">
+        <div className="p-4 flex items-center justify-between border-b border-border">
         <div className="flex items-center gap-2">
           <Settings className="h-5 w-5 text-primary" />
           <span className="font-medium text-foreground">Generation Controls</span>
         </div>
-        <Button variant="outline" size="sm" className="gap-2">
-          <Key className="h-4 w-4" />
-          API Secrets
-        </Button>
+          <div>
+            <ApiSecretsModal />
+          </div>
       </div>
 
       {/* Tabs */}
