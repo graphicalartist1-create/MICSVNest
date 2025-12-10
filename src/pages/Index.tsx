@@ -120,7 +120,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="p-6">
+      <main className="pt-20 p-6">
         <div className="flex gap-6 max-w-[1800px] mx-auto">
           {/* Left Sidebar - Generation Controls */}
           <aside className="w-[480px] flex-shrink-0">
@@ -135,7 +135,6 @@ const Index = () => {
               onGenerate={handleGenerate}
               onExport={handleExport}
               isGenerating={isGenerating}
-              imageType={settings.imageType}
             />
             
             <ResultsPanel results={results} />
