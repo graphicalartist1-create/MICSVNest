@@ -122,10 +122,10 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background">
       <Header />
       
-      <main className="pt-20 p-6">
+      <main className="pt-20 px-6">
         <div className="flex gap-6 max-w-[1800px] mx-auto">
           {/* Left Sidebar - Generation Controls */}
           <aside className="w-[480px] flex-shrink-0">
@@ -133,7 +133,7 @@ const Index = () => {
           </aside>
 
           {/* Main Content */}
-          <div className="flex-1 space-y-6">
+          <div className="flex-1 space-y-4">
             <FileUpload
               files={files}
               onFilesChange={setFiles}

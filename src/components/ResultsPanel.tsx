@@ -14,15 +14,13 @@ interface ResultsPanelProps {
 
 const ResultsPanel = ({ results }: ResultsPanelProps) => {
   if (results.length === 0) {
-    return (
-      <div className="bg-card rounded-lg border border-border p-8 text-center">
-        <ImageIcon className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-        <p className="text-primary text-lg mb-2">Your generated results will appear here.</p>
-        <p className="text-muted-foreground">
-          Upload some files and click "Generate All" to get started.
-        </p>
-      </div>
-    );
+      return (
+        <div className="bg-card rounded-lg border border-border p-4 text-center">
+          <ImageIcon className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+          <p className="text-primary text-base mb-1">Your generated results will appear here.</p>
+          <p className="text-muted-foreground text-sm">Upload some files and click "Generate All" to get started.</p>
+        </div>
+      );
   }
 
   return (

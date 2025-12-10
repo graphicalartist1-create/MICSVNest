@@ -47,14 +47,14 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
   };
 
   return (
-    <div className="bg-card rounded-lg border border-border overflow-hidden h-full flex flex-col">
+    <div className="bg-card rounded-lg border border-border overflow-hidden flex flex-col">
       {/* Header */}
-      <div className="p-4 border-b border-border">
+      <div className="p-3 border-b border-border">
         <h2 className="text-lg font-semibold text-foreground">Upload Files</h2>
       </div>
 
       {/* Sign In Alert */}
-      <div className="px-4 pt-4">
+      <div className="px-3 pt-3">
         <Alert className="bg-primary/10 border-primary/30">
           <LogIn className="h-4 w-4 text-primary" />
           <AlertDescription className="text-primary">
@@ -66,7 +66,7 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
       </div>
 
       {/* Upload Area */}
-      <div className="p-4 flex-1">
+      <div className="p-3">
         <input
           type="file"
           multiple
@@ -81,13 +81,13 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          className={`border-2 border-dashed rounded-lg p-8 text-center transition-all h-full min-h-[300px] flex flex-col items-center justify-center cursor-pointer select-none ${
+          className={`border-2 border-dashed rounded-lg p-4 text-center transition-all min-h-[120px] flex flex-col items-center justify-center cursor-pointer select-none ${
             isDragging
               ? "border-primary bg-primary/5 shadow-lg"
               : "border-border hover:border-primary/10 hover:shadow-md"
           }`}
         >
-          <Upload className="h-16 w-16 text-muted-foreground mb-4" />
+          <Upload className="h-12 w-12 text-muted-foreground mb-3" />
 
           {/* File Type Tabs */}
           <div className="flex gap-2 mb-4">
@@ -106,11 +106,11 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
             ))}
           </div>
 
-          <p className="text-foreground mb-2 font-semibold">
+          <p className="text-foreground mb-1 font-medium">
             Drag & drop files here, or click anywhere to select
           </p>
-          <p className="text-sm text-muted-foreground mb-4">
-            Supports common image, video, SVG, and EPS formats. Max 500 files.
+          <p className="text-xs text-muted-foreground mb-2">
+            Supports image, video, SVG, EPS. Max 500 files.
           </p>
 
           <div className="pointer-events-none">
@@ -122,7 +122,7 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
       </div>
 
       {/* API Warning */}
-      <div className="px-4 pb-4">
+      <div className="px-3 pb-2">
         <div className="flex items-center gap-2 text-destructive text-sm">
           <AlertCircle className="h-4 w-4" />
           <span>No Google Gemini API keys. Add keys in settings.</span>
@@ -130,7 +130,7 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
       </div>
 
       {/* Action Buttons */}
-      <div className="p-4 border-t border-border flex items-center justify-between">
+      <div className="p-3 border-t border-border flex items-center justify-between">
         <div className="flex items-center gap-2 text-destructive text-sm">
           <AlertCircle className="h-4 w-4" />
           <span>No Google Gemini API keys. Add keys in settings.</span>
