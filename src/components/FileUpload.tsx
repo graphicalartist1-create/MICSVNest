@@ -284,7 +284,7 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
           >
             <Sparkles className="h-4 w-4" />
             <span>
-              {isGenerating ? "Generating..." : `Generate All (${queue.filter(q => q.status === "uploaded").length})`}
+              {isGenerating ? "Generating..." : "Generate All"}
             </span>
           </Button>
           <Button 
