@@ -164,42 +164,42 @@ const ApiSecretsModal: React.FC = () => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-xl">
-        <DialogHeader className="pb-3">
-          <DialogTitle className="text-sm">API Secrets Management</DialogTitle>
-          <DialogDescription className="text-xs">Manage your AI provider API keys. Keys are stored locally and securely.</DialogDescription>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader className="pb-4">
+          <DialogTitle className="text-base">API Secrets Management</DialogTitle>
+          <DialogDescription className="text-sm">Manage your AI provider API keys. Keys are stored locally and securely.</DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-3">
+        <div className="space-y-4">
           {/* Provider Selection */}
           <div>
-            <p className="text-xs font-medium mb-2">Select AI Provider</p>
-            <div className="flex gap-1 flex-wrap">
+            <p className="text-sm font-medium mb-3">Select AI Provider</p>
+            <div className="flex gap-2 flex-wrap">
               {providers.map((p) => (
                 <button
                   key={p.id}
                   onClick={() => setSelected(p.id)}
-                  className={`px-2.5 py-1.5 rounded text-xs border transition ${
+                  className={`px-3 py-2 rounded text-xs border transition ${
                     selected === p.id 
                       ? "bg-cyan-500 border-cyan-500 text-black" 
                       : "bg-[#0b1013] border-[#232b30] text-muted-foreground hover:border-[#3a4450]"
                   }`}>
                   {p.name.split(' ')[0]}
-                  {p.badge && <span className="ml-1 text-[10px] bg-orange-500 rounded px-1">{p.badge.split(' ')[0]}</span>}
+                  {p.badge && <span className="ml-1 text-[10px] bg-orange-500 rounded px-1.5">{p.badge.split(' ')[0]}</span>}
                 </button>
               ))}
             </div>
           </div>
 
           {/* Configuration and Stored Keys Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             {/* Left: Form */}
             {selected ? (
-              <div className="bg-[#0b0f11] rounded border border-border p-2.5 space-y-2.5">
+              <div className="bg-[#0b0f11] rounded border border-border p-3 space-y-3">
                 <div>
-                  <label className="text-xs font-medium block mb-1">Model</label>
+                  <label className="text-xs font-medium block mb-1.5">Model</label>
                   <Select value={model} onValueChange={(v) => setModel(v)}>
-                    <SelectTrigger className="bg-[#0b1013] border-[#232b30] h-7 text-xs">
+                    <SelectTrigger className="bg-[#0b1013] border-[#232b30] h-8 text-xs">
                       <SelectValue placeholder="Select model" />
                     </SelectTrigger>
                     <SelectContent>
@@ -211,25 +211,25 @@ const ApiSecretsModal: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-xs font-medium block mb-1">API Key</label>
-                  <div className="flex gap-1">
+                  <label className="text-xs font-medium block mb-1.5">API Key</label>
+                  <div className="flex gap-2">
                     <Input 
                       placeholder="Enter key" 
                       value={apiKey} 
                       onChange={(e) => setApiKey(e.target.value)}
-                      className="bg-[#0b1013] border-[#232b30] h-7 text-xs"
+                      className="bg-[#0b1013] border-[#232b30] h-8 text-xs"
                       type="password"
                     />
-                    <Button onClick={saveKey} className="bg-cyan-500 hover:bg-cyan-600 text-black font-medium h-7 px-2 text-xs" size="sm">Save</Button>
+                    <Button onClick={saveKey} className="bg-cyan-500 hover:bg-cyan-600 text-black font-medium h-8 px-3 text-xs" size="sm">Save</Button>
                   </div>
                 </div>
 
                 {selected === "google" && (
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     <Button 
                       onClick={handleGoogleSignIn}
                       disabled={googleSignInLoading}
-                      className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-medium h-7 text-xs"
+                      className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-medium h-8 text-xs"
                       size="sm"
                     >
                       {googleSignInLoading ? "Loading..." : "Sign with Google"}
@@ -239,28 +239,28 @@ const ApiSecretsModal: React.FC = () => {
                 )}
               </div>
             ) : (
-              <div className="bg-[#0b0f11] rounded border border-border p-2.5 flex items-center justify-center min-h-[120px]">
+              <div className="bg-[#0b0f11] rounded border border-border p-3 flex items-center justify-center min-h-[140px]">
                 <p className="text-muted-foreground text-xs text-center">Select a provider</p>
               </div>
             )}
 
             {/* Right: Stored Keys */}
             <div>
-              <div className="bg-[#0b0f11] rounded border border-border p-2.5 h-full flex flex-col">
-                <div className="text-xs font-medium mb-2">Stored Keys {selected ? `(${storedKeys.length})` : ""}</div>
-                <div className="flex-1 overflow-y-auto space-y-1">
+              <div className="bg-[#0b0f11] rounded border border-border p-3 h-full flex flex-col">
+                <div className="text-sm font-medium mb-3">Stored Keys {selected ? `(${storedKeys.length})` : ""}</div>
+                <div className="flex-1 overflow-y-auto space-y-2">
                   {selected ? (
                     storedKeys.length > 0 ? (
                       <>
                         {storedKeys.map((k) => (
-                          <div key={k.id} className="text-xs bg-[#161b1f] rounded p-1.5 border border-[#232b30]">
-                            <div className="font-medium mb-0.5">{k.model}</div>
-                            <div className="text-muted-foreground font-mono text-[10px] mb-1">{maskKey(k.key)}</div>
-                            <div className="flex gap-1">
+                          <div key={k.id} className="text-xs bg-[#161b1f] rounded p-2 border border-[#232b30]">
+                            <div className="font-medium mb-1">{k.model}</div>
+                            <div className="text-muted-foreground font-mono text-[10px] mb-1.5">{maskKey(k.key)}</div>
+                            <div className="flex gap-1.5">
                               <Button 
                                 variant="outline" 
                                 size="sm" 
-                                className="flex-1 text-xs h-5 p-0"
+                                className="flex-1 text-xs h-6 p-0"
                                 onClick={() => navigator.clipboard?.writeText(k.key)}
                               >
                                 Copy
@@ -268,7 +268,7 @@ const ApiSecretsModal: React.FC = () => {
                               <Button 
                                 variant="destructive" 
                                 size="sm" 
-                                className="flex-1 text-xs h-5 p-0"
+                                className="flex-1 text-xs h-6 p-0"
                                 onClick={() => deleteKey(k.id)}
                               >
                                 Del
