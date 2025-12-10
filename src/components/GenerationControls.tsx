@@ -97,6 +97,7 @@ const PlatformIcon = ({ icon }: { icon: string }) => {
 const GenerationControls = ({ settings, onSettingsChange }: GenerationControlsProps) => {
   const [activeTab, setActiveTab] = useState<"metadata" | "prompt">("metadata");
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(true);
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
   // Load saved settings from localStorage on mount
   useEffect(() => {
@@ -114,6 +115,22 @@ const GenerationControls = ({ settings, onSettingsChange }: GenerationControlsPr
       // ignore
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Track google sign-in status and listen for changes
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const check = () => {
+      const token = localStorage.getItem("googleAuth:token");
+      const user = localStorage.getItem("googleAuth:user");
+      setIsSignedIn(Boolean(token || user));
+    };
+    check();
+    const handler = (e: StorageEvent) => {
+      if (e.key === "googleAuth:token" || e.key === "googleAuth:user") check();
+    };
+    window.addEventListener("storage", handler);
+    return () => window.removeEventListener("storage", handler);
   }, []);
 
   // Save settings to localStorage whenever they change
@@ -139,7 +156,7 @@ const GenerationControls = ({ settings, onSettingsChange }: GenerationControlsPr
           <span className="font-medium text-foreground">Generation Controls</span>
         </div>
           <div>
-            <ApiSecretsModal />
+            {!isSignedIn && <ApiSecretsModal />}
           </div>
       </div>
 
