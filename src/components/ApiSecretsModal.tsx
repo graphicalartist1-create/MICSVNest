@@ -300,52 +300,6 @@ const ApiSecretsModal: React.FC = () => {
               </div>
             </div>
           </div>
-
-          {/* Quick links to retrieve provider API keys */}
-          <div className="mt-4 text-sm">
-            <ul className="flex flex-col gap-2 list-none p-0 m-0">
-              <li>
-                <a
-                  href="https://aistudio.google.com/app/apikey"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-cyan-400 underline underline-offset-2 decoration-cyan-400 text-sm hover:text-cyan-300"
-                >
-                  Google Gemini - Get Google Gemini API Key
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://console.mistral.ai/api-keys/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-cyan-400 underline underline-offset-2 decoration-cyan-400 text-sm hover:text-cyan-300"
-                >
-                  Mistral AI - Get Mistral AI API Key
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://platform.openai.com/api-keys"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-cyan-400 underline underline-offset-2 decoration-cyan-400 text-sm hover:text-cyan-300"
-                >
-                  OpenAI - Get OpenAI API Key
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://openrouter.ai/keys"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-cyan-400 underline underline-offset-2 decoration-cyan-400 text-sm hover:text-cyan-300"
-                >
-                  OpenRouter - Get OpenRouter API Key
-                </a>
-              </li>
-            </ul>
-          </div>
         </div>
       </DialogContent>
     </Dialog>
