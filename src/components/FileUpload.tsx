@@ -56,15 +56,27 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
     e.preventDefault();
     setIsDragging(false);
     const droppedFiles = Array.from(e.dataTransfer.files);
-    addFiles(droppedFiles);
-  }, [addFiles]);
+    setQueue((prev) => {
+      const combined = [...prev, ...droppedFiles.slice(0, MAX_FILES - prev.length).map((f, i) => ({ id: `${Date.now()}-${prev.length + i}-${f.name}`, file: f, progress: 0, status: "queued" as const }))];
+      syncFilesToParent(combined);
+      // Auto-upload immediately after files are dropped
+      setTimeout(() => uploadAllFiles(combined), 100);
+      return combined;
+    });
+  }, []);
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const selectedFiles = Array.from(e.target.files);
-      addFiles(selectedFiles);
+      setQueue((prev) => {
+        const combined = [...prev, ...selectedFiles.slice(0, MAX_FILES - prev.length).map((f, i) => ({ id: `${Date.now()}-${prev.length + i}-${f.name}`, file: f, progress: 0, status: "queued" as const }))];
+        syncFilesToParent(combined);
+        // Auto-upload immediately after files are added
+        setTimeout(() => uploadAllFiles(combined), 100);
+        return combined;
+      });
     }
-  }, [addFiles]);
+  }, []);
 
   const clearAll = () => {
     setQueue([]);
@@ -108,10 +120,11 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
     });
   };
 
-  const uploadAll = async () => {
-    if (queue.length === 0) return;
+  const uploadAllFiles = async (itemsToUpload?: QueueItem[]) => {
+    const items = itemsToUpload || queue;
+    if (items.length === 0) return;
+    
     setIsUploading(true);
-    const items = [...queue];
 
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
@@ -139,7 +152,6 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
     }
 
     setIsUploading(false);
-    // After upload, call generate with uploaded keys if desired
   };
 
   const handleGenerateAll = () => {
@@ -263,11 +275,11 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
             <Trash2 className="h-4 w-4" />
             Clear All
           </Button>
-          {/* Upload All button - only show if files queued */}
-          {queue.length > 0 && (
+          {/* Upload All button - only show if files queued and not yet uploaded */}
+          {queue.length > 0 && queue.some(q => q.status !== "uploaded") && (
             <Button 
               variant="outline" 
-              onClick={uploadAll} 
+              onClick={() => uploadAllFiles()} 
               disabled={isUploading}
               className="gap-2"
             >
