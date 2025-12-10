@@ -1,4 +1,6 @@
 import { useState } from "react";
+import adobeLogo from "@/assets/adobe-stock.svg";
+import shutterLogo from "@/assets/shutterstock.svg";
 import { Settings, Key, ChevronDown, ChevronUp, Type } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -56,20 +58,9 @@ const PlatformIcon = ({ icon }: { icon: string }) => {
         </svg>
       );
     case "adobe":
-      return (
-        <svg viewBox="0 0 24 24" className="h-5 w-5 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none">
-          <rect width="24" height="24" rx="3" fill="#FF0000" />
-          <path d="M6 18L12 4l6 14h-3.5L12 8 9.5 18H6z" fill="#ffffff" />
-        </svg>
-      );
+      return <img src={adobeLogo} alt="Adobe Stock" className="h-6 w-6 mx-auto object-contain" />;
     case "St":
-      return (
-        <svg viewBox="0 0 24 24" className="h-5 w-5 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none">
-          <rect width="24" height="24" rx="4" fill="#FF2B2B" />
-          <path d="M7.2 16.2c1.6-2 4.3-6 8.6-6 1.6 0 3.2.9 3.2 2.8 0 2.2-2.3 2.8-3.6 2.8-3.9 0-4.8-3.1-8.2-2.6z" fill="#ffffff" />
-          <path d="M12 7.1c1 0 1.8.8 1.8 1.8S13 10.7 12 10.7s-1.8-.8-1.8-1.8S11 7.1 12 7.1z" fill="#ffffff" opacity="0.95" />
-        </svg>
-      );
+      return <img src={shutterLogo} alt="Shutterstock" className="h-6 w-6 mx-auto object-contain" />;
     case "istock":
       return (
         <svg viewBox="0 0 24 24" className="h-5 w-5 mx-auto" fill="none" stroke="currentColor" strokeWidth="2.5">
