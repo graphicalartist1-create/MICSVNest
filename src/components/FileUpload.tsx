@@ -9,12 +9,11 @@ interface FileUploadProps {
   onGenerate: () => void;
   onExport: () => void;
   isGenerating: boolean;
-  imageType?: string;
 }
 
 const fileTypes = ["Images", "Videos", "SVG", "EPS"] as const;
 
-const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, imageType }: FileUploadProps) => {
+const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating }: FileUploadProps) => {
   const [activeType, setActiveType] = useState<typeof fileTypes[number]>("Images");
   const [isDragging, setIsDragging] = useState(false);
 
@@ -151,7 +150,7 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
           </Button>
           <Button variant="outline" onClick={onExport} className="gap-2">
             <Download className="h-4 w-4" />
-            {imageType === "vector" ? "Export Vector Package" : "Export CSV"}
+            Export CSV
           </Button>
         </div>
       </div>

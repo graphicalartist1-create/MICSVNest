@@ -3,6 +3,8 @@ import Header from "@/components/Header";
 import GenerationControls from "@/components/GenerationControls";
 import FileUpload from "@/components/FileUpload";
 import ResultsPanel from "@/components/ResultsPanel";
+import ExportDialog from "@/components/ExportDialog";
+import { generateMetadataForFile, generatePromptForFile } from "@/lib/generator";
 import HowToUseButton from "@/components/HowToUseButton";
 import DeveloperBadge from "@/components/DeveloperBadge";
 
@@ -39,6 +41,7 @@ interface Result {
   title: string;
   description: string;
   keywords: string[];
+  prompt?: string;
 }
 
 const Index = () => {
@@ -72,48 +75,50 @@ const Index = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [results, setResults] = useState<Result[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [showExportDialog, setShowExportDialog] = useState(false);
 
   const handleGenerate = async () => {
     if (files.length === 0) return;
     
     setIsGenerating(true);
     
-    // Simulate generation (in real app, this would call AI API)
-    setTimeout(() => {
-      const newResults: Result[] = files.map((file, i) => ({
+    // Generate metadata and prompts using local generator utilities.
+    // This keeps generation deterministic and uses the current settings.
+    try {
+      const generated: Result[] = files.map((file, i) => {
+        const meta = generateMetadataForFile(file.name, settings);
+        const prompt = generatePromptForFile(file.name, settings);
+        return {
+          id: `${Date.now()}-${i}`,
+          filename: file.name,
+          title: meta.title,
+          description: meta.description,
+          keywords: meta.keywords,
+          prompt,
+        };
+      });
+      // Small delay to preserve UX (keep "Generating..." visible briefly)
+      setTimeout(() => {
+        setResults(generated);
+        setIsGenerating(false);
+      }, 600);
+    } catch (e) {
+      // Fallback: restore previous stub behavior on error
+      const fallback: Result[] = files.map((file, i) => ({
         id: `${Date.now()}-${i}`,
         filename: file.name,
         title: `Generated title for ${file.name}`,
         description: `AI-generated description for the image ${file.name}. This would contain relevant metadata for stock photo platforms.`,
-        keywords: ["stock", "photo", "image", "digital", "creative", "design", "professional", "high-quality"],
+        keywords: ["stock", "photo", "image"],
       }));
-      setResults(newResults);
+      setResults(fallback);
       setIsGenerating(false);
-    }, 2000);
+    }
   };
 
   const handleExport = () => {
     if (results.length === 0) return;
-
-    const csvContent = [
-      ["Filename", "Title", "Description", "Keywords"].join(","),
-      ...results.map((r) =>
-        [
-          r.filename,
-          `"${r.title}"`,
-          `"${r.description}"`,
-          `"${r.keywords.join(", ")}"`,
-        ].join(",")
-      ),
-    ].join("\n");
-
-    const blob = new Blob([csvContent], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "csvnest-export.csv";
-    a.click();
-    URL.revokeObjectURL(url);
+    setShowExportDialog(true);
   };
 
   return (
@@ -141,6 +146,13 @@ const Index = () => {
           </div>
         </div>
       </main>
+
+      <ExportDialog
+        open={showExportDialog}
+        onOpenChange={setShowExportDialog}
+        results={results}
+        files={files}
+      />
 
       <HowToUseButton />
       <DeveloperBadge />

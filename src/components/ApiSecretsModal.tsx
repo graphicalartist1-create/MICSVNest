@@ -192,7 +192,7 @@ const ApiSecretsModal: React.FC = () => {
                       : "bg-[#0b1013] border-[#232b30] text-muted-foreground hover:border-[#3a4450]"
                   }`}>
                   {p.id === 'google' ? p.name : p.name.split(' ')[0]}
-                  {p.badge && <span className="ml-1 text-[10px] bg-orange-500 rounded px-1.5">{p.badge.split(' ')[0]}</span>}
+                  {p.badge && <span className="ml-1 text-[9px] text-muted-foreground bg-transparent border border-border rounded px-1 py-0.5">{p.badge.split(' ')[0]}</span>}
                 </button>
               ))}
             </div>
