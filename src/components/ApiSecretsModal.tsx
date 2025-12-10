@@ -86,7 +86,7 @@ const ApiSecretsModal: React.FC = () => {
       // Trigger Google Sign-In
       if (window.google?.accounts?.id) {
         window.google.accounts.id.initialize({
-          client_id: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com', // Replace with your Client ID
+          client_id: '566319724872-kn7kqd58poci11m9q3v64r8ltk5ifbi4.apps.googleusercontent.com',
           callback: (response: any) => {
             if (response.credential) {
               // Decode JWT token to get user info
