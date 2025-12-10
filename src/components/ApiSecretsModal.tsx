@@ -156,6 +156,13 @@ const ApiSecretsModal: React.FC = () => {
     }
   };
 
+  const providerUrls: Record<string, string> = {
+    google: "https://aistudio.google.com/app/apikey",
+    mistral: "https://console.mistral.ai/api-keys/",
+    openai: "https://platform.openai.com/api-keys",
+    openrouter: "https://openrouter.ai/keys",
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -222,6 +229,20 @@ const ApiSecretsModal: React.FC = () => {
                     />
                     <Button onClick={saveKey} className="bg-cyan-500 hover:bg-cyan-600 text-black font-medium h-8 px-3 text-xs" size="sm">Save</Button>
                   </div>
+
+                  {/* Per-provider quick link to get an API key (placed under the input) */}
+                  {selected && providerUrls[selected] && (
+                    <div className="mt-2">
+                      <a
+                        href={providerUrls[selected]}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-cyan-400 underline underline-offset-2 decoration-cyan-400 text-sm hover:text-cyan-300"
+                      >
+                        {providers.find((p) => p.id === selected)?.name} - Get {providers.find((p) => p.id === selected)?.name.split(' ')[0]} API Key
+                      </a>
+                    </div>
+                  )}
                 </div>
 
                 {/* Google sign-in hidden per user request */}
