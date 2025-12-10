@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ছবির মেটাডেটা জেনারেটর</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>🖼️ ছবির মেটাডেটা জেনারেটর</h1>
+            <p class="subtitle">আপনার ছবি আপলোড করুন এবং বিস্তারিত তথ্য পান</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="content">
+            <!-- Upload Section -->
+            <section class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <input 
+                        type="file" 
+                        id="imageInput" 
+                        accept="image/*" 
+                        class="file-input"
+                    >
+                    <label for="imageInput" class="upload-label">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+                        </svg>
+                        <span class="upload-text">ছবি আপলোড করুন</span>
+                        <span class="upload-hint">বা এখানে ড্র্যাগ করুন</span>
+                    </label>
+                    <p class="supported">সমর্থিত ফরম্যাট: JPG, PNG, GIF, WebP</p>
+                </div>
+            </section>
+
+            <!-- Preview Section -->
+            <section class="preview-section" id="previewSection" style="display: none;">
+                <div class="preview-container">
+                    <img id="imagePreview" src="" alt="ছবির প্রিভিউ" class="preview-image">
+                    <div class="preview-info">
+                        <h3>ছবির তথ্য</h3>
+                        <ul class="info-list">
+                            <li>
+                                <span class="label">ফাইলের নাম:</span>
+                                <span id="fileName" class="value">-</span>
+                            </li>
+                            <li>
+                                <span class="label">ফাইলের সাইজ:</span>
+                                <span id="fileSize" class="value">-</span>
+                            </li>
+                            <li>
+                                <span class="label">ফাইল টাইপ:</span>
+                                <span id="fileType" class="value">-</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Metadata Section -->
+            <section class="metadata-section" id="metadataSection" style="display: none;">
+                <h2>📝 মেটাডেটা সম্পাদনা</h2>
+                
+                <!-- Main Metadata Edit Layout -->
+                <div class="metadata-edit-layout">
+                    <!-- Left Column: Image and Technical Info -->
+                    <div class="metadata-left">
+                        <!-- Image Properties -->
+                        <div class="metadata-card">
+                            <h3>📐 ছবির মাপ</h3>
+                            <div class="metadata-grid">
+                                <div class="metadata-item">
+                                    <span class="label">প্রস্থ (Width):</span>
+                                    <span id="imgWidth" class="value">-</span>
+                                </div>
+                                <div class="metadata-item">
+                                    <span class="label">উচ্চতা (Height):</span>
+                                    <span id="imgHeight" class="value">-</span>
+                                </div>
+                                <div class="metadata-item">
+                                    <span class="label">অনুপাত (Ratio):</span>
+                                    <span id="imgRatio" class="value">-</span>
+                                </div>
+                                <div class="metadata-item">
+                                    <span class="label">পিক্সেল ঘনত্ব:</span>
+                                    <span id="pixelDensity" class="value">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Color Information -->
+                        <div class="metadata-card">
+                            <h3>🎨 রঙের তথ্য</h3>
+                            <div class="metadata-grid">
+                                <div class="metadata-item">
+                                    <span class="label">প্রভাবশালী রঙ:</span>
+                                    <div class="color-display">
+                                        <div id="dominantColor" class="color-box"></div>
+                                        <span id="dominantColorText" class="value">-</span>
+                                    </div>
+                                </div>
+                                <div class="metadata-item">
+                                    <span class="label">গড় উজ্জ্বলতা:</span>
+                                    <span id="brightness" class="value">-</span>
+                                </div>
+                                <div class="metadata-item">
+                                    <span class="label">কন্ট্রাস্ট স্তর:</span>
+                                    <span id="contrast" class="value">-</span>
+                                </div>
+                                <div class="metadata-item">
+                                    <span class="label">স্যাচুরেশন:</span>
+                                    <span id="saturation" class="value">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Technical Information -->
+                        <div class="metadata-card">
+                            <h3>⚙️ প্রযুক্তিগত তথ্য</h3>
+                            <div class="metadata-grid">
+                                <div class="metadata-item">
+                                    <span class="label">মোট পিক্সেল:</span>
+                                    <span id="totalPixels" class="value">-</span>
+                                </div>
+                                <div class="metadata-item">
+                                    <span class="label">রঙের গভীরতা:</span>
+                                    <span id="colorDepth" class="value">-</span>
+                                </div>
+                                <div class="metadata-item">
+                                    <span class="label">অনুমানিত DPI:</span>
+                                    <span id="estimatedDPI" class="value">-</span>
+                                </div>
+                                <div class="metadata-item">
+                                    <span class="label">সৃষ্টির সময়:</span>
+                                    <span id="creationTime" class="value">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Title, Description, Keywords -->
+                    <div class="metadata-right">
+                        <!-- Title Section -->
+                        <div class="metadata-input-card">
+                            <div class="input-header">
+                                <span class="input-icon">📋</span>
+                                <label class="input-label">শিরোনাম (Title)</label>
+                            </div>
+                            <textarea 
+                                id="titleInput" 
+                                class="metadata-textarea"
+                                placeholder="আপনার ছবির একটি আকর্ষণীয় শিরোনাম লিখুন..."
+                                rows="4"
+                            ></textarea>
+                            <button id="copyTitle" class="btn btn-copy">📋 শিরোনাম কপি করুন</button>
+                        </div>
+
+                        <!-- Description Section -->
+                        <div class="metadata-input-card">
+                            <div class="input-header">
+                                <span class="input-icon">📄</span>
+                                <label class="input-label">বর্ণনা (Description)</label>
+                            </div>
+                            <textarea 
+                                id="descriptionInput" 
+                                class="metadata-textarea"
+                                placeholder="আপনার ছবির বিস্তারিত বর্ণনা লিখুন..."
+                                rows="5"
+                            ></textarea>
+                            <button id="copyDescription" class="btn btn-copy">📋 বর্ণনা কপি করুন</button>
+                        </div>
+
+                        <!-- Keywords Section -->
+                        <div class="metadata-input-card">
+                            <div class="input-header">
+                                <span class="input-icon">🔑</span>
+                                <label class="input-label">কীওয়ার্ড (Keywords)</label>
+                            </div>
+                            <div class="keywords-container" id="keywordsContainer">
+                                <div class="keywords-list" id="keywordsList">
+                                    <!-- Dynamic keywords will be added here -->
+                                </div>
+                            </div>
+                            <button id="copyKeywords" class="btn btn-copy">📋 কীওয়ার্ড কপি করুন</button>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="input-action-buttons">
+                            <button id="regenerateBtn" class="btn btn-regenerate">🔄 পুনর্জন্ম করুন</button>
+                            <button id="resetBtn" class="btn btn-danger">❌ রিসেট করুন</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Legacy Download Button -->
+                <div class="legacy-action-buttons" style="margin-top: 30px; text-align: center;">
+                    <button id="downloadJSON" class="btn btn-secondary">📥 JSON ডাউনলোড করুন</button>
+                </div>
+            </section>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+            <!-- Success Message -->
+            <div id="successMessage" class="success-message" style="display: none;"></div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© ২০২৫ ইমেজ মেটাডেটা জেনারেটর | সকল অধিকার সংরক্ষিত</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
