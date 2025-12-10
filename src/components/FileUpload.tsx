@@ -71,18 +71,18 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
           type="file"
           multiple
           accept="image/*,video/*,.svg,.eps"
-          onChange={handleFileSelect}
-          className="hidden"
-          id="file-upload"
-        />
-
-        <label
-            htmlFor="file-upload"
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            className={`border-2 border-dashed rounded-lg p-2 text-center transition-all min-h-0 flex flex-col items-center justify-center cursor-pointer select-none ${
-              isDragging
+            <label
+              htmlFor="file-upload"
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={`border-2 border-dashed rounded-lg p-2 text-center transition-all min-h-0 flex flex-col items-center justify-center cursor-pointer select-none ${
+                isDragging
+                  ? "border-primary bg-primary/5 shadow-lg"
+                  : "border-border hover:border-primary/10 hover:shadow-md"
+              }`}
+              style={{ zIndex: 2, minHeight: 0, height: files.length === 0 ? '0px' : 'auto', display: files.length === 0 ? 'none' : 'flex' }}
+            >
                 ? "border-primary bg-primary/5 shadow-lg"
                 : "border-border hover:border-primary/10 hover:shadow-md"
             }`}
