@@ -45,11 +45,11 @@ const Header = () => {
         </Button>
         <div className="ml-3 flex items-center gap-3 bg-card border border-border rounded-lg px-3 py-2">
           <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center text-sm font-medium text-primary">
-            AA
+            MI
           </div>
           <div className="flex flex-col">
             <span className="text-xs text-muted-foreground">Developed By</span>
-            <span className="text-sm font-medium text-primary">Ar Abir</span>
+            <span className="text-sm font-medium text-primary">MI Mazharul</span>
           </div>
         </div>
       </nav>
