@@ -263,15 +263,18 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
             <Trash2 className="h-4 w-4" />
             Clear All
           </Button>
-          <Button 
-            variant="outline" 
-            onClick={uploadAll} 
-            disabled={queue.length === 0 || isUploading}
-            className="gap-2"
-          >
-            <Upload className="h-4 w-4" />
-            {isUploading ? "Uploading..." : "Upload All"}
-          </Button>
+          {/* Upload All button - only show if files queued */}
+          {queue.length > 0 && (
+            <Button 
+              variant="outline" 
+              onClick={uploadAll} 
+              disabled={isUploading}
+              className="gap-2"
+            >
+              <Upload className="h-4 w-4" />
+              {isUploading ? "Uploading..." : "Upload All"}
+            </Button>
+          )}
           <Button 
             variant="outline" 
             onClick={handleGenerateAll} 
