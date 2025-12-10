@@ -6,101 +6,76 @@ import { Textarea } from "@/components/ui/textarea";
 interface Result {
   id: string;
   filename: string;
-  title: string;
-  description: string;
-  keywords: string[];
-  prompt?: string;
-  size?: number;
-  preview?: string;
-}
+                  </div>
+                </div>
 
-interface ResultsPanelProps {
-  results: Result[];
-  onUpdateResult?: (id: string, updatedFields: Partial<Result>) => void;
-  onRegenerate?: (id: string) => void;
-}
+                {/* AI Prompt Section (Read-only) */}
+                {result.prompt && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 px-1">
+                      <RefreshCw className="h-5 w-5 text-green-400" />
+                      <label className="text-sm font-semibold text-foreground tracking-wide">AI Prompt (Generated)</label>
+                    </div>
+                    <div className="p-3 rounded text-xs text-muted-foreground bg-green-400/5 border border-green-400/30 border-l-2 border-l-green-400 max-h-[100px] overflow-auto">
+                      {result.prompt}
+                    </div>
+                  </div>
+                )}
 
-const ResultsPanel = ({ results, onUpdateResult, onRegenerate }: ResultsPanelProps) => {
-  const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [editedFields, setEditedFields] = useState<Record<string, Partial<Result>>>({});
+                {/* Copy Buttons Row */}
+                <div className="pt-4 border-t border-border/50">
+                  <div className="flex gap-3 flex-wrap">
+                    <Button
+                      variant="outline"
+                      className="flex-1 gap-2 h-11 px-4 text-sm font-medium border-border text-foreground hover:bg-secondary/40"
+                      onClick={() => copyToClipboard(editedTitle, `${result.id}-title`)}
+                    >
+                      <Copy className="h-4 w-4" />
+                      <span>Copy Title</span>
+                    </Button>
 
-  if (results.length === 0) {
-    return (
-      <div className="text-center py-8">
-        <ImageIcon className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-        <p className="text-primary text-base mb-1">Your generated results will appear here.</p>
-        <p className="text-muted-foreground text-sm">Upload some files and click "Generate All" to get started.</p>
-      </div>
-    );
-  }
+                    <Button
+                      variant="outline"
+                      className="flex-1 gap-2 h-11 px-4 text-sm font-medium border-border text-foreground hover:bg-secondary/40"
+                      onClick={() => copyToClipboard(editedDescription, `${result.id}-desc`)}
+                    >
+                      <Copy className="h-4 w-4" />
+                      <span>Copy Description</span>
+                    </Button>
 
-  const copyToClipboard = (text: string, id: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 2000);
-  };
+                    <Button
+                      variant="outline"
+                      className="flex-1 gap-2 h-11 px-4 text-sm font-medium border-border text-foreground hover:bg-secondary/40"
+                      onClick={() => copyToClipboard(Array.isArray(editedKeywords) ? editedKeywords.join(", ") : "", `${result.id}-kw`)}
+                    >
+                      <Copy className="h-4 w-4" />
+                      <span>Copy Keywords</span>
+                    </Button>
+                  </div>
 
-  const getEditedValue = (resultId: string, field: string, defaultValue: any) => {
-    return editedFields[resultId]?.[field as keyof Result] ?? defaultValue;
-  };
+                  <div className="flex justify-end mt-3">
+                    <div className="flex items-center gap-2">
+                      {hasChanges && (
+                        <Button
+                          size="sm"
+                          className="gap-1.5 h-10 px-4 text-sm font-medium bg-green-600 hover:bg-green-700"
+                          onClick={() => handleSave(result.id)}
+                        >
+                          Save Changes
+                        </Button>
+                      )}
 
-  const handleFieldChange = (resultId: string, field: string, value: any) => {
-    setEditedFields(prev => ({
-      ...prev,
-      [resultId]: { ...prev[resultId], [field]: value }
-    }));
-  };
-
-  const handleSave = (resultId: string) => {
-    if (onUpdateResult && editedFields[resultId]) {
-      onUpdateResult(resultId, editedFields[resultId]);
-      setEditedFields(prev => {
-        const next = { ...prev };
-        delete next[resultId];
-        return next;
-      });
-    }
-  };
-
-  const handleRegenerate = (resultId: string) => {
-    if (onRegenerate) {
-      onRegenerate(resultId);
-      // Clear edited fields for this result
-      setEditedFields(prev => {
-        const next = { ...prev };
-        delete next[resultId];
-        return next;
-      });
-    }
-  };
-
-  return (
-    <div>
-      <div className="py-3 border-b border-border">
-        <h3 className="font-semibold text-foreground">Generated Results ({results.length})</h3>
-      </div>
-      <div className="divide-y divide-border max-h-[800px] overflow-auto px-2">
-        {results.map((result) => {
-          const editedTitle = getEditedValue(result.id, "title", result.title);
-          const editedDescription = getEditedValue(result.id, "description", result.description);
-          const editedKeywords = getEditedValue(result.id, "keywords", result.keywords);
-          const hasChanges = !!editedFields[result.id];
-
-          return (
-            <div key={result.id} className="p-4 hover:bg-secondary/50 transition-colors">
-              <div className="flex gap-4">
-                {/* Left: thumbnail + file info */}
-                <div className="w-40 min-w-[160px] flex-shrink-0">
-                  <div className="w-40 h-40 bg-secondary rounded-lg overflow-hidden flex items-center justify-center border border-border relative group">
-                    {result.preview ? (
-                      <img 
-                        src={result.preview} 
-                        alt={result.filename}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <ImageIcon className="h-12 w-12 text-muted-foreground" />
-                    )}
+                      <Button
+                        size="sm"
+                        className="gap-1.5 h-10 px-4 text-sm font-medium bg-cyan-600 hover:bg-cyan-700 text-white"
+                        onClick={() => handleRegenerate(result.id)}
+                      >
+                        <RefreshCw className="h-4 w-4" />
+                        <span>Regenerate</span>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
                     {/* Trash overlay on hover */}
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
                       <Trash2 className="h-6 w-6 text-red-500" />
