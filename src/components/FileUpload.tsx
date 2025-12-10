@@ -253,37 +253,48 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
       </div>
 
       {/* Action Buttons */}
-      <div className="py-3 border-t border-border flex items-center justify-between">
-        <div className="flex items-center gap-2 text-destructive text-sm">
-          <AlertCircle className="h-4 w-4" />
-          <span>{process.env.REACT_APP_API_BASE ? "Server configured" : "Running in mock mode (no server)"}</span>
+      <div className="py-4 border-t border-border space-y-3">
+        {/* Status Bar */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-red-500 text-sm font-medium">
+            <AlertCircle className="h-4 w-4" />
+            <span>{process.env.REACT_APP_API_BASE ? "Server configured" : "Running in mock mode (no server)"}</span>
+          </div>
+          <div className="text-sm text-muted-foreground">
+            {queue.length > 0 && (
+              <span>{queue.filter(q => q.status === "uploaded").length > 0 ? `${queue.filter(q => q.status === "uploaded").length} file(s) ready for metadata` : `${queue.length} file(s) queued`} | Total: {(queue.reduce((sum, q) => sum + q.file.size, 0) / 1024 / 1024).toFixed(1)} MB</span>
+            )}
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={clearAll} className="gap-2">
-            <Trash2 className="h-4 w-4" />
-            Clear All
-          </Button>
+
+        {/* Main Action Buttons Row */}
+        <div className="flex gap-3">
           <Button 
             variant="outline" 
-            onClick={uploadAll} 
-            disabled={queue.length === 0 || isUploading}
-            className="gap-2"
+            onClick={clearAll} 
+            className="flex-1 gap-2 border-border text-foreground hover:bg-destructive/10 hover:border-destructive"
           >
-            <Upload className="h-4 w-4" />
-            {isUploading ? "Uploading..." : "Upload All"}
+            <Trash2 className="h-4 w-4" />
+            <span>Clear All</span>
           </Button>
           <Button 
-            variant="outline" 
             onClick={handleGenerateAll} 
             disabled={queue.filter(q => q.status === "uploaded").length === 0 || isGenerating}
-            className="gap-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+            className="flex-1 gap-2 bg-cyan-500 hover:bg-cyan-600 text-white font-medium"
           >
             <Sparkles className="h-4 w-4" />
-            {isGenerating ? "Generating..." : "Generate Metadata"}
+            <span>
+              {isGenerating ? "Generating..." : `Generate All (${queue.filter(q => q.status === "uploaded").length})`}
+            </span>
           </Button>
-          <Button variant="outline" onClick={onExport} className="gap-2">
+          <Button 
+            variant="outline" 
+            onClick={onExport} 
+            disabled={queue.length === 0}
+            className="flex-1 gap-2 border-border text-foreground"
+          >
             <Download className="h-4 w-4" />
-            {imageType === "vector" ? "Export Vector Package" : "Export CSV"}
+            <span>Export CSV</span>
           </Button>
         </div>
       </div>
