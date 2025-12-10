@@ -1,8 +1,8 @@
 const DeveloperBadge = () => {
   return (
-    <div className="fixed bottom-6 right-6 z-50">
-      <div className="bg-card border border-border rounded-lg px-6 py-3 shadow-lg flex items-center justify-center">
-        <span className="text-base md:text-lg font-extrabold tracking-wider uppercase text-cyan-300">
+    <div className="fixed bottom-4 right-4 z-50">
+      <div className="bg-card border border-border rounded-md px-3 py-2 shadow-sm flex items-center justify-center min-w-[120px]">
+        <span className="text-sm font-bold tracking-wider uppercase text-cyan-300">
           HOW TO USE
         </span>
       </div>
