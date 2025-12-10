@@ -184,7 +184,7 @@ const ApiSecretsModal: React.FC = () => {
                       ? "bg-cyan-500 border-cyan-500 text-black" 
                       : "bg-[#0b1013] border-[#232b30] text-muted-foreground hover:border-[#3a4450]"
                   }`}>
-                  {p.name.split(' ')[0]}
+                  {p.id === 'google' ? p.name : p.name.split(' ')[0]}
                   {p.badge && <span className="ml-1 text-[10px] bg-orange-500 rounded px-1.5">{p.badge.split(' ')[0]}</span>}
                 </button>
               ))}
@@ -224,19 +224,7 @@ const ApiSecretsModal: React.FC = () => {
                   </div>
                 </div>
 
-                {selected === "google" && (
-                  <div className="space-y-2">
-                    <Button 
-                      onClick={handleGoogleSignIn}
-                      disabled={googleSignInLoading}
-                      className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-medium h-8 text-xs"
-                      size="sm"
-                    >
-                      {googleSignInLoading ? "Loading..." : "Sign with Google"}
-                    </Button>
-                    <div id="google-signin-button" className="flex justify-center scale-90"></div>
-                  </div>
-                )}
+                {/* Google sign-in hidden per user request */}
               </div>
             ) : (
               <div className="bg-[#0b0f11] rounded border border-border p-3 flex items-center justify-center min-h-[140px]">
@@ -289,6 +277,16 @@ const ApiSecretsModal: React.FC = () => {
                   )}
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Quick links to retrieve provider API keys */}
+          <div className="mt-4 text-sm">
+            <div className="flex flex-col gap-2">
+              <a href="https://developers.google.com/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">Google Gemini - Get Google Gemini API Key</a>
+              <a href="https://mistral.ai/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">Mistral AI - Get Mistral AI API Key</a>
+              <a href="https://platform.openai.com/account/api-keys" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">OpenAI - Get OpenAI API Key</a>
+              <a href="https://openrouter.ai/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">OpenRouter - Get OpenRouter API Key</a>
             </div>
           </div>
         </div>
