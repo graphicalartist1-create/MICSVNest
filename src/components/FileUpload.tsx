@@ -81,12 +81,12 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            className={`border-2 border-dashed rounded-lg p-4 text-center transition-all min-h-[120px] flex flex-col items-center justify-center cursor-pointer select-none ${
+            className={`border-2 border-dashed rounded-lg p-2 text-center transition-all min-h-0 flex flex-col items-center justify-center cursor-pointer select-none ${
               isDragging
                 ? "border-primary bg-primary/5 shadow-lg"
                 : "border-border hover:border-primary/10 hover:shadow-md"
             }`}
-            style={{ zIndex: 2 }}
+            style={{ zIndex: 2, minHeight: 0, height: 'auto' }}
           >
           <Upload className="h-16 w-16 text-muted-foreground mb-4" />
 
