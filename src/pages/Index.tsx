@@ -43,6 +43,8 @@ interface Result {
   description: string;
   keywords: string[];
   prompt?: string;
+  size?: number;
+  preview?: string;
 }
 
 const Index = () => {
@@ -122,6 +124,8 @@ const Index = () => {
       const generated: Result[] = files.map((file, i) => {
         const meta = generateMetadataForFile(file.name, settings);
         const prompt = generatePromptForFile(file.name, settings);
+        // Create a preview URL from the file using FileReader
+        const preview = URL.createObjectURL(file);
         return {
           id: `${Date.now()}-${i}`,
           filename: file.name,
@@ -129,6 +133,8 @@ const Index = () => {
           description: meta.description,
           keywords: meta.keywords,
           prompt,
+          size: file.size,
+          preview,
         };
       });
       // Small delay to preserve UX (keep "Generating..." visible briefly)
@@ -145,13 +151,18 @@ const Index = () => {
     } catch (e) {
       // Fallback: restore previous stub behavior on error
       clearInterval(progressInterval);
-      const fallback: Result[] = files.map((file, i) => ({
-        id: `${Date.now()}-${i}`,
-        filename: file.name,
-        title: `Generated title for ${file.name}`,
-        description: `AI-generated description for the image ${file.name}. This would contain relevant metadata for stock photo platforms.`,
-        keywords: ["stock", "photo", "image"],
-      }));
+      const fallback: Result[] = files.map((file, i) => {
+        const preview = URL.createObjectURL(file);
+        return {
+          id: `${Date.now()}-${i}`,
+          filename: file.name,
+          title: `Generated title for ${file.name}`,
+          description: `AI-generated description for the image ${file.name}. This would contain relevant metadata for stock photo platforms.`,
+          keywords: ["stock", "photo", "image"],
+          size: file.size,
+          preview,
+        };
+      });
       setResults(fallback);
       setIsGenerating(false);
       setShowProgressBar(false);

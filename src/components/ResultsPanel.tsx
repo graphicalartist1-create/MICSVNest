@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ImageIcon, Copy, Check, Type, FileText, Tag, RefreshCw } from "lucide-react";
+import { ImageIcon, Copy, Check, Type, FileText, Tag, RefreshCw, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -10,6 +10,8 @@ interface Result {
   description: string;
   keywords: string[];
   prompt?: string;
+  size?: number;
+  preview?: string;
 }
 
 interface ResultsPanelProps {
@@ -89,13 +91,28 @@ const ResultsPanel = ({ results, onUpdateResult, onRegenerate }: ResultsPanelPro
               <div className="flex gap-4">
                 {/* Left: thumbnail + file info */}
                 <div className="w-40 min-w-[160px] flex-shrink-0">
-                  <div className="w-40 h-40 bg-secondary rounded-lg overflow-hidden flex items-center justify-center border border-border">
-                    {/* If there's a preview URL in result.preview it could be shown here */}
-                    <ImageIcon className="h-12 w-12 text-muted-foreground" />
+                  <div className="w-40 h-40 bg-secondary rounded-lg overflow-hidden flex items-center justify-center border border-border relative group">
+                    {result.preview ? (
+                      <img 
+                        src={result.preview} 
+                        alt={result.filename}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <ImageIcon className="h-12 w-12 text-muted-foreground" />
+                    )}
+                    {/* Trash overlay on hover */}
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                      <Trash2 className="h-6 w-6 text-red-500" />
+                    </div>
                   </div>
-                  <div className="mt-2 text-xs text-muted-foreground">
-                    <div className="truncate">{result.filename}</div>
-                    {/* size info can be shown if available */}
+                  <div className="mt-2 text-xs text-muted-foreground space-y-1">
+                    <div className="truncate font-medium text-foreground">{result.filename}</div>
+                    {result.size && (
+                      <div className="text-muted-foreground">
+                        Size: {(result.size / 1024).toFixed(0)} KB · {(result.size / 1024 / 1024).toFixed(2)} MB
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -185,11 +202,11 @@ const ResultsPanel = ({ results, onUpdateResult, onRegenerate }: ResultsPanelPro
                 )}
 
                 {/* Action Buttons */}
-                <div className="flex items-center gap-3 pt-4 border-t border-border/50">
+                <div className="flex items-center gap-2 pt-4 border-t border-border/50 flex-wrap">
                   <Button
                     size="sm"
                     variant="outline"
-                    className="gap-1.5 h-8 px-3 text-xs font-medium border-cyan-400/30 text-cyan-400 hover:bg-cyan-400/10 hover:border-cyan-400/50 transition-all"
+                    className="gap-1.5 h-9 px-3 text-xs font-medium border-border text-foreground hover:bg-secondary/50"
                     onClick={() => copyToClipboard(editedTitle, `${result.id}-title`)}
                   >
                     {copiedId === `${result.id}-title` ? (
@@ -206,7 +223,7 @@ const ResultsPanel = ({ results, onUpdateResult, onRegenerate }: ResultsPanelPro
                   <Button
                     size="sm"
                     variant="outline"
-                    className="gap-1.5 h-8 px-3 text-xs font-medium border-purple-400/30 text-purple-400 hover:bg-purple-400/10 hover:border-purple-400/50 transition-all"
+                    className="gap-1.5 h-9 px-3 text-xs font-medium border-border text-foreground hover:bg-secondary/50"
                     onClick={() => copyToClipboard(editedDescription, `${result.id}-desc`)}
                   >
                     {copiedId === `${result.id}-desc` ? (
@@ -223,7 +240,7 @@ const ResultsPanel = ({ results, onUpdateResult, onRegenerate }: ResultsPanelPro
                   <Button
                     size="sm"
                     variant="outline"
-                    className="gap-1.5 h-8 px-3 text-xs font-medium border-orange-400/30 text-orange-400 hover:bg-orange-400/10 hover:border-orange-400/50 transition-all"
+                    className="gap-1.5 h-9 px-3 text-xs font-medium border-border text-foreground hover:bg-secondary/50"
                     onClick={() => copyToClipboard(
                       Array.isArray(editedKeywords) ? editedKeywords.join(", ") : "",
                       `${result.id}-kw`
@@ -239,6 +256,8 @@ const ResultsPanel = ({ results, onUpdateResult, onRegenerate }: ResultsPanelPro
                       </>
                     )}
                   </Button>
+
+                  <div className="flex-1" />
 
                   <div className="flex gap-2">
                     {hasChanges && (
