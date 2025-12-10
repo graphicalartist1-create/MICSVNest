@@ -186,8 +186,6 @@ const GenerationControls = ({ settings, onSettingsChange }: GenerationControlsPr
             Prompt
           </button>
         </div>
-        {/* Red bar below Clear All button */}
-        <div style={{ background: 'red', height: '16px', width: '100%', borderRadius: '4px', marginTop: '8px' }} />
       </div>
 
       {/* Advanced Controls */}
