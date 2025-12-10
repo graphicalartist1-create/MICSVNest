@@ -8,8 +8,8 @@ const DeveloperBadge = () => {
           <User className="h-5 w-5 text-primary" />
         </div>
         <div className="flex flex-col">
-          <span className="text-xs text-muted-foreground">Developed By</span>
-          <span className="text-sm font-medium text-primary">Mazharul Islam</span>
+          <span className="text-xs text-muted-foreground">How to</span>
+          <span className="text-sm font-medium text-primary">USE</span>
         </div>
       </div>
     </div>
