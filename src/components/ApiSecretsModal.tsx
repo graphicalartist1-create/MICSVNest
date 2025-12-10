@@ -1,151 +1,322 @@
 import React, { useEffect, useState } from "react";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const providers = [
-  { id: "google", name: "Google Gemini" },
-  { id: "mistral", name: "Mistral" },
-  { id: "openai", name: "OpenAI" },
-  { id: "openrouter", name: "OpenRouter" },
+  { id: "google", name: "Google Gemini", hint: "Aiza...", badge: null },
+  { id: "mistral", name: "Mistral AI", hint: "32-33 chars", badge: "Paid" },
+  { id: "openai", name: "OpenAI", hint: "sk-...", badge: "Paid" },
+  { id: "openrouter", name: "OpenRouter", hint: "sk-or-...", badge: "Paid & Free" },
 ];
 
-const providerUrls: Record<string, string> = {
-  google: "https://aistudio.google.com/app/apikey",
-  mistral: "https://console.mistral.ai/api-keys/",
-  openai: "https://platform.openai.com/api-keys",
-  openrouter: "https://openrouter.ai/keys",
-};
-
-export default function ApiSecretsModal() {
-  const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<string>(providers[0].id);
-  const [apiKey, setApiKey] = useState("");
-  const [stored, setStored] = useState<Record<string, string[]>>({});
+const ApiSecretsModal: React.FC = () => {
+  const [selected, setSelected] = useState<string | null>(null);
+  const [model, setModel] = useState<string>("");
+  const [apiKey, setApiKey] = useState<string>("");
+  const [storedKeys, setStoredKeys] = useState<Array<any>>([]);
+  const [googleSignInLoading, setGoogleSignInLoading] = useState(false);
 
   useEffect(() => {
-    const data: Record<string, string[]> = {};
-    if (typeof window !== "undefined" && window.localStorage) {
-      providers.forEach((p) => {
-        try {
-          const v = localStorage.getItem(`apiKeys:${p.id}`);
-          data[p.id] = v ? JSON.parse(v) : [];
-        } catch {
-          data[p.id] = [];
-        }
-      });
-    } else {
-      providers.forEach((p) => (data[p.id] = []));
+    if (selected) {
+      const raw = localStorage.getItem(`apiKeys:${selected}`);
+      try {
+        const parsed = raw ? JSON.parse(raw) : [];
+        setStoredKeys(parsed);
+      } catch (e) {
+        setStoredKeys([]);
+      }
+      // reset form values when switching providers
+      setModel("");
+      setApiKey("");
     }
-    setStored(data);
-  }, []);
+  }, [selected]);
 
   const saveKey = () => {
-    const next = [...(stored[selected] || []), apiKey].filter(Boolean);
-    const copy = { ...stored, [selected]: next };
-    localStorage.setItem(`apiKeys:${selected}`, JSON.stringify(next));
-    setStored(copy);
-    setApiKey("");
+    if (!selected) return alert("Please select a provider.");
+    if (!apiKey || apiKey.trim().length === 0) return alert("Please enter an API key.");
+
+    const next = [
+      ...storedKeys,
+      {
+        id: Date.now().toString(),
+        model: model || "default",
+        key: apiKey.trim(),
+        createdAt: new Date().toISOString(),
+      },
+    ];
+
+    try {
+      localStorage.setItem(`apiKeys:${selected}`, JSON.stringify(next));
+      setStoredKeys(next);
+      setApiKey("");
+      // simple feedback
+      // In production consider encrypting keys before storage
+    } catch (e) {
+      console.error(e);
+      alert("Failed to save key.");
+    }
   };
 
-  const deleteKey = (index: number) => {
-    const next = (stored[selected] || []).filter((_, i) => i !== index);
-    const copy = { ...stored, [selected]: next };
+  const deleteKey = (id: string) => {
+    if (!selected) return;
+    const next = storedKeys.filter((k) => k.id !== id);
     localStorage.setItem(`apiKeys:${selected}`, JSON.stringify(next));
-    setStored(copy);
+    setStoredKeys(next);
+  };
+
+  const handleGoogleSignIn = async () => {
+    setGoogleSignInLoading(true);
+    try {
+      // Load Google Sign-In SDK if not already loaded
+      if (!window.google) {
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.defer = true;
+        
+        script.onload = () => {
+          initializeGoogleSignIn();
+        };
+        
+        document.head.appendChild(script);
+      } else {
+        initializeGoogleSignIn();
+      }
+    } catch (error) {
+      console.error('Google Sign-In error:', error);
+      alert('Failed to sign in with Google. Please try again.');
+      setGoogleSignInLoading(false);
+    }
+  };
+
+  const initializeGoogleSignIn = () => {
+    if (!window.google?.accounts?.id) {
+      setGoogleSignInLoading(false);
+      alert('Google Sign-In SDK not loaded. Please try again.');
+      return;
+    }
+
+    window.google.accounts.id.initialize({
+      client_id: '566319724872-kn7kqd58poci11m9q3v64r8ltk5ifbi4.apps.googleusercontent.com',
+      callback: handleCredentialResponse,
+    });
+
+    // Render the sign-in button
+    const container = document.getElementById('google-signin-button');
+    if (container && !container.innerHTML) {
+      window.google.accounts.id.renderButton(container, {
+        theme: 'dark',
+        size: 'large',
+        text: 'signin_with',
+      });
+    }
+    
+    setGoogleSignInLoading(false);
+  };
+
+  const handleCredentialResponse = (response: any) => {
+    if (response.credential) {
+      try {
+        // Decode JWT token to get user info
+        const base64Url = response.credential.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map((c: string) => {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        
+        const userData = JSON.parse(jsonPayload);
+        
+        // Save the credential for use with Google API
+        localStorage.setItem(`googleAuth:token`, response.credential);
+        localStorage.setItem(`googleAuth:user`, JSON.stringify(userData));
+        
+        console.log('Google Sign-In successful:', userData);
+        alert(`Welcome ${userData.name}!`);
+      } catch (error) {
+        console.error('Error processing credential:', error);
+        alert('Error processing sign-in. Please try again.');
+      }
+    }
+  };
+
+  const modelsFor = (providerId: string | null) => {
+    switch (providerId) {
+      case "google":
+        return ["Gemini 2.5 Flash-Lite Preview", "Gemini 1.0", "Gemini Nano"];
+      case "mistral":
+        return ["Mistral Large", "Mistral Mix"];
+      case "openai":
+        return ["gpt-4o", "gpt-4o-mini", "gpt-3.5-turbo"];
+      case "openrouter":
+        return ["OpenRouter Default"];
+      default:
+        return ["default"];
+    }
+  };
+
+  const providerUrls: Record<string, string> = {
+    google: "https://aistudio.google.com/app/apikey",
+    mistral: "https://console.mistral.ai/api-keys/",
+    openai: "https://platform.openai.com/api-keys",
+    openrouter: "https://openrouter.ai/keys",
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="gap-2">
           API Secrets
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="w-[92vw] max-w-none h-[calc(100vh-4rem)] overflow-hidden p-6">
-        <DialogHeader>
-          <DialogTitle>API Secrets Management</DialogTitle>
-          <DialogDescription>Manage your AI provider API keys. Keys are stored locally and securely.</DialogDescription>
+      <DialogContent className="max-w-4xl max-h-[90vh]">
+        <DialogHeader className="pb-4">
+          <DialogTitle className="text-base">API Secrets Management</DialogTitle>
+          <DialogDescription className="text-sm">Manage your AI provider API keys. Keys are stored locally and securely.</DialogDescription>
         </DialogHeader>
 
-        <div className="mt-4 grid grid-cols-12 gap-4">
-          <div className="col-span-7 space-y-4">
-            <label className="text-sm text-muted-foreground">Select AI Provider</label>
-            <div className="flex gap-2">
+        <div className="space-y-4">
+          {/* Provider Selection */}
+          <div>
+            <p className="text-sm font-medium mb-3">Select AI Provider</p>
+            <div className="flex gap-2 flex-wrap">
               {providers.map((p) => (
                 <button
                   key={p.id}
                   onClick={() => setSelected(p.id)}
-                  className={`px-3 py-1 rounded-md text-sm ${selected === p.id ? "bg-cyan-500 text-black" : "bg-[#0b1013] text-muted-foreground"}`}>
-                  {p.name}
+                  className={`px-3 py-2 rounded text-xs border transition ${
+                    selected === p.id 
+                      ? "bg-cyan-500 border-cyan-500 text-black" 
+                      : "bg-[#0b1013] border-[#232b30] text-muted-foreground hover:border-[#3a4450]"
+                  }`}>
+                  {p.id === 'google' ? p.name : p.name.split(' ')[0]}
+                  {p.badge && <span className="ml-1 text-[10px] bg-orange-500 rounded px-1.5">{p.badge.split(' ')[0]}</span>}
                 </button>
               ))}
             </div>
-
-            <div className="grid grid-cols-2 gap-4 items-start">
-              <div>
-                <label className="text-sm text-muted-foreground">Model</label>
-                <Select value="" onValueChange={() => {}}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select model" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">Select model</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                <label className="text-sm text-muted-foreground mt-4 block">API Key</label>
-                <div className="flex gap-2">
-                  <Input placeholder="Enter key" value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
-                  <Button onClick={saveKey}>Save</Button>
-                </div>
-
-                <a className="text-cyan-400 underline text-sm mt-2 inline-block" href={providerUrls[selected]} target="_blank" rel="noreferrer">Get {providers.find(p=>p.id===selected)?.name} API Key</a>
-              </div>
-
-              <div className="col-span-1">
-                <div className="border border-border rounded-md p-4 h-full">
-                  <div className="text-sm font-medium mb-2">Stored Keys ({(stored[selected] || []).length})</div>
-                  <div className="text-sm text-muted-foreground">
-                    {(stored[selected] || []).length === 0 ? (
-                      <span>No keys stored yet</span>
-                    ) : (
-                      <ul className="space-y-2">
-                        {(stored[selected] || []).map((k, i) => (
-                          <li key={i} className="flex justify-between items-center">
-                            <span className="truncate max-w-[150px]">{k}</span>
-                            <button className="text-xs text-red-400" onClick={() => deleteKey(i)}>Delete</button>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
 
-          <div className="col-span-5">
-            {/* Right column can hold help/links or details */}
-            <div className="border border-border rounded-md p-4 h-full">
-              <div className="text-sm font-medium mb-2">Quick Links</div>
-              <ul className="text-sm text-muted-foreground space-y-2">
-                <li>
-                  <a className="text-cyan-400 underline" href={providerUrls.openrouter} target="_blank" rel="noreferrer">OpenRouter - Get OpenRouter API Key</a>
-                </li>
-                <li>
-                  <a className="text-cyan-400 underline" href={providerUrls.openai} target="_blank" rel="noreferrer">OpenAI - Get API Key</a>
-                </li>
-                <li>
-                  <a className="text-cyan-400 underline" href={providerUrls.google} target="_blank" rel="noreferrer">Google - Get API Key</a>
-                </li>
-              </ul>
+          {/* Configuration and Stored Keys Grid */}
+          <div className="grid grid-cols-2 gap-4">
+            {/* Left: Form */}
+            {selected ? (
+              <div className="bg-[#0b0f11] rounded border border-border p-3 space-y-3">
+                <div>
+                  <label className="text-xs font-medium block mb-1.5">Model</label>
+                  <Select value={model} onValueChange={(v) => setModel(v)}>
+                    <SelectTrigger className="bg-[#0b1013] border-[#232b30] h-8 text-xs">
+                      <SelectValue placeholder="Select model" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {modelsFor(selected).map((m) => (
+                        <SelectItem key={m} value={m}>{m}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="text-xs font-medium block mb-1.5">API Key</label>
+                  <div className="flex gap-2">
+                    <Input 
+                      placeholder="Enter key" 
+                      value={apiKey} 
+                      onChange={(e) => setApiKey(e.target.value)}
+                      className="bg-[#0b1013] border-[#232b30] h-8 text-xs"
+                      type="password"
+                    />
+                    <Button onClick={saveKey} className="bg-cyan-500 hover:bg-cyan-600 text-black font-medium h-8 px-3 text-xs" size="sm">Save</Button>
+                  </div>
+
+                  {/* Per-provider quick link to get an API key (placed under the input) */}
+                  {selected && providerUrls[selected] && (
+                    <div className="mt-2">
+                      <a
+                        href={providerUrls[selected]}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-cyan-400 underline underline-offset-2 decoration-cyan-400 text-sm hover:text-cyan-300"
+                      >
+                        {providers.find((p) => p.id === selected)?.name} - Get {providers.find((p) => p.id === selected)?.name.split(' ')[0]} API Key
+                      </a>
+                    </div>
+                  )}
+                </div>
+
+                {/* Google sign-in hidden per user request */}
+              </div>
+            ) : (
+              <div className="bg-[#0b0f11] rounded border border-border p-3 flex items-center justify-center min-h-[140px]">
+                <p className="text-muted-foreground text-xs text-center">Select a provider</p>
+              </div>
+            )}
+
+            {/* Right: Stored Keys */}
+            <div>
+              <div className="bg-[#0b0f11] rounded border border-border p-3 h-full flex flex-col">
+                <div className="text-sm font-medium mb-3">Stored Keys {selected ? `(${storedKeys.length})` : ""}</div>
+                <div className="flex-1 overflow-y-auto space-y-2">
+                  {selected ? (
+                    storedKeys.length > 0 ? (
+                      <>
+                        {storedKeys.map((k) => (
+                          <div key={k.id} className="text-xs bg-[#161b1f] rounded p-2 border border-[#232b30]">
+                            <div className="font-medium mb-1">{k.model}</div>
+                            <div className="text-muted-foreground font-mono text-[10px] mb-1.5">{maskKey(k.key)}</div>
+                            <div className="flex gap-1.5">
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="flex-1 text-xs h-6 p-0"
+                                onClick={() => navigator.clipboard?.writeText(k.key)}
+                              >
+                                Copy
+                              </Button>
+                              <Button 
+                                variant="destructive" 
+                                size="sm" 
+                                className="flex-1 text-xs h-6 p-0"
+                                onClick={() => deleteKey(k.id)}
+                              >
+                                Del
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </>
+                    ) : (
+                      <div className="flex items-center justify-center h-24 text-center">
+                        <p className="text-muted-foreground text-xs">No keys stored yet</p>
+                      </div>
+                    )
+                  ) : (
+                    <div className="flex items-center justify-center h-24 text-center">
+                      <p className="text-muted-foreground text-xs">Select a provider</p>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </DialogContent>
     </Dialog>
   );
+};
+
+function maskKey(k: string) {
+  if (!k) return "";
+  if (k.length <= 8) return "****" + k.slice(-4);
+  return "****" + k.slice(-6);
 }
+
+// Type declaration for Google Sign-In
+declare global {
+  interface Window {
+    google: any;
+  }
+}
+
+export default ApiSecretsModal;

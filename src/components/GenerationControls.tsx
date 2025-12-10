@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Settings, Type } from "lucide-react";
+import adobeLogo from "@/assets/adobe-stock.svg";
+import shutterLogo from "@/assets/shutterstock.svg";
+import { Settings, Key, ChevronDown, ChevronUp, Type } from "lucide-react";
+import ApiSecretsModal from "@/components/ApiSecretsModal";
 import { Button } from "@/components/ui/button";
-import ApiSecretsModal from "./ApiSecretsModal";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -58,13 +60,18 @@ const PlatformIcon = ({ icon }: { icon: string }) => {
       );
     case "adobe":
       return (
-        <svg viewBox="0 0 24 24" className="h-5 w-5 mx-auto" fill="none">
-          <path d="M12 3l-2 6h4l-2-6z" fill="currentColor" opacity="0.6"/>
-          <path d="M8 9l-3 9h3l1-3h2l-1-3H8z" fill="currentColor"/>
-          <path d="M16 9l3 9h-3l-1-3h-2l1-3h2z" fill="currentColor"/>
-          <circle cx="12" cy="6" r="1" fill="currentColor"/>
-          <circle cx="9" cy="4" r="0.5" fill="currentColor"/>
-          <circle cx="15" cy="4" r="0.5" fill="currentColor"/>
+        <svg viewBox="0 0 24 24" className="h-6 w-6 mx-auto" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+          <rect x="3" y="3" width="18" height="18" rx="3" fill="#FF3B30" />
+          <path d="M7 17 L12 6 L17 17 H14.6 L12 11 L9.4 17 H7 Z" fill="#FFFFFF" />
+        </svg>
+      );
+    case "St":
+    case "shutterstock":
+      return (
+        <svg viewBox="0 0 24 24" className="h-6 w-6 mx-auto" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+          <rect x="3" y="3" width="18" height="18" rx="3" fill="#FF3B30" />
+          <rect x="7" y="8" width="10" height="6" rx="1" fill="#FFFFFF" />
+          <circle cx="12" cy="11" r="2" fill="#FF3B30" />
         </svg>
       );
     case "istock":
@@ -107,7 +114,9 @@ const GenerationControls = ({ settings, onSettingsChange }: GenerationControlsPr
           <Settings className="h-5 w-5 text-primary" />
           <span className="font-medium text-foreground">Generation Controls</span>
         </div>
-        <ApiSecretsModal />
+          <div>
+            <ApiSecretsModal />
+          </div>
       </div>
 
       {/* Tabs */}
@@ -247,9 +256,10 @@ const GenerationControls = ({ settings, onSettingsChange }: GenerationControlsPr
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">None</SelectItem>
-                    <SelectItem value="photo">Photo</SelectItem>
+                    <SelectItem value="illustrations">Illustrations</SelectItem>
+                    <SelectItem value="3d-illustrations">3D Illustrations</SelectItem>
+                    <SelectItem value="3d-icon">3D Icon</SelectItem>
                     <SelectItem value="vector">Vector</SelectItem>
-                    <SelectItem value="illustration">Illustration</SelectItem>
                   </SelectContent>
                 </Select>
                 <p className="text-xs text-muted-foreground mt-2">
@@ -366,9 +376,10 @@ const GenerationControls = ({ settings, onSettingsChange }: GenerationControlsPr
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">None</SelectItem>
-                    <SelectItem value="photo">Photo</SelectItem>
+                    <SelectItem value="illustrations">Illustrations</SelectItem>
+                    <SelectItem value="3d-illustrations">3D Illustrations</SelectItem>
+                    <SelectItem value="3d-icon">3D Icon</SelectItem>
                     <SelectItem value="vector">Vector</SelectItem>
-                    <SelectItem value="illustration">Illustration</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
