@@ -171,7 +171,7 @@ const ApiSecretsModal: React.FC = () => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-4xl max-h-[80vh]">
+      <DialogContent className="max-w-4xl max-h-[90vh]">
         <DialogHeader className="pb-4">
           <DialogTitle className="text-base">API Secrets Management</DialogTitle>
           <DialogDescription className="text-sm">Manage your AI provider API keys. Keys are stored locally and securely.</DialogDescription>
