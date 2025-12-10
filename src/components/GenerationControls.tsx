@@ -256,12 +256,10 @@ const GenerationControls = ({ settings, onSettingsChange }: GenerationControlsPr
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">None</SelectItem>
-                    <SelectItem value="photo">Photo</SelectItem>
-                    <SelectItem value="vector">Vector</SelectItem>
-                    <SelectItem value="illustration">Illustration</SelectItem>
                     <SelectItem value="illustrations">Illustrations</SelectItem>
                     <SelectItem value="3d-illustrations">3D Illustrations</SelectItem>
                     <SelectItem value="3d-icon">3D Icon</SelectItem>
+                    <SelectItem value="vector">Vector</SelectItem>
                   </SelectContent>
                 </Select>
                 <p className="text-xs text-muted-foreground mt-2">
@@ -378,12 +376,10 @@ const GenerationControls = ({ settings, onSettingsChange }: GenerationControlsPr
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">None</SelectItem>
-                    <SelectItem value="photo">Photo</SelectItem>
-                    <SelectItem value="vector">Vector</SelectItem>
-                    <SelectItem value="illustration">Illustration</SelectItem>
                     <SelectItem value="illustrations">Illustrations</SelectItem>
                     <SelectItem value="3d-illustrations">3D Illustrations</SelectItem>
                     <SelectItem value="3d-icon">3D Icon</SelectItem>
+                    <SelectItem value="vector">Vector</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
