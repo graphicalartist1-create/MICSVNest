@@ -1,7 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-  <rect width="48" height="48" rx="6" fill="#25d0e6"/>
-  <g transform="translate(8,8)">
-    <path d="M8 28 L16 6 L24 28 H20 L16 14 L12 28 H8 Z" fill="#ffffff"/>
-    <rect x="2" y="2" width="36" height="36" rx="6" fill="none" stroke="rgba(255,255,255,0.06)" />
+  <!-- Transparent background so parent container color shows through -->
+  <g transform="translate(14,14)">
+    <!-- small red rounded square -->
+    <rect x="0" y="0" width="20" height="20" rx="4" fill="#FF3B30" />
+    <!-- stylized 'A' in white -->
+    <path d="M5 14 L10 4 L15 14 L13.2 14 L10 8 L6.8 14 Z" fill="#ffffff" />
   </g>
 </svg>

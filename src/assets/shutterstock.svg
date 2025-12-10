@@ -1,12 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-  <rect width="48" height="48" rx="6" fill="#7FB9E0"/>
-  <g transform="translate(10,10)" fill="#cfeaf9">
-    <rect x="0" y="0" width="28" height="28" rx="4" />
-    <path d="M4 4 L8 4 L8 6 L6 6 L6 8 L4 8 Z" fill="#1f2b33" opacity="0" />
-    <!-- corner crop marks -->
-    <path d="M2 6 L6 6 L6 2" stroke="#1f2b33" stroke-width="2" stroke-linecap="round" fill="none" />
-    <path d="M26 6 L22 6 L22 2" stroke="#1f2b33" stroke-width="2" stroke-linecap="round" fill="none" />
-    <path d="M2 22 L6 22 L6 26" stroke="#1f2b33" stroke-width="2" stroke-linecap="round" fill="none" />
-    <path d="M26 22 L22 22 L22 26" stroke="#1f2b33" stroke-width="2" stroke-linecap="round" fill="none" />
+  <!-- Transparent background so the parent container color shows through -->
+  <g transform="translate(14,14)">
+    <!-- small red rounded square -->
+    <rect x="0" y="0" width="20" height="20" rx="4" fill="#FF3B30" />
+    <!-- simple white camera-like mark -->
+    <rect x="5" y="6" width="10" height="6" rx="1" fill="#ffffff" />
+    <circle cx="10" cy="9" r="2" fill="#FF3B30" />
   </g>
 </svg>
