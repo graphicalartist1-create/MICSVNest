@@ -121,6 +121,24 @@ const Index = () => {
     setShowExportDialog(true);
   };
 
+  const handleUpdateResult = (id: string, updatedFields: Partial<Result>) => {
+    setResults(prev => prev.map(r => r.id === id ? { ...r, ...updatedFields } : r));
+  };
+
+  const handleRegenerateResult = (id: string) => {
+    const resultToRegen = results.find(r => r.id === id);
+    if (!resultToRegen) return;
+
+    const meta = generateMetadataForFile(resultToRegen.filename, settings);
+    const prompt = generatePromptForFile(resultToRegen.filename, settings);
+
+    setResults(prev => prev.map(r => 
+      r.id === id 
+        ? { ...r, title: meta.title, description: meta.description, keywords: meta.keywords, prompt }
+        : r
+    ));
+  };
+
   return (
     <div className="bg-background">
       <Header />
@@ -143,7 +161,11 @@ const Index = () => {
               imageType={settings.imageType}
             />
             
-            <ResultsPanel results={results} />
+            <ResultsPanel 
+              results={results} 
+              onUpdateResult={handleUpdateResult}
+              onRegenerate={handleRegenerateResult}
+            />
           </div>
         </div>
       </main>
