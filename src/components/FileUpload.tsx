@@ -65,38 +65,38 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
         </Alert>
       </div>
 
-      {/* Upload Area */}
-        <div className="p-4 flex-1">
+      {/* Upload Area (compact) */}
+      <div className="p-4">
         <input
           type="file"
           multiple
           accept="image/*,video/*,.svg,.eps"
-            <label
-              htmlFor="file-upload"
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              className={`border-2 border-dashed rounded-lg p-2 text-center transition-all min-h-0 flex flex-col items-center justify-center cursor-pointer select-none ${
-                isDragging
-                  ? "border-primary bg-primary/5 shadow-lg"
-                  : "border-border hover:border-primary/10 hover:shadow-md"
-              }`}
-              style={{ zIndex: 2, minHeight: 0, height: files.length === 0 ? '0px' : 'auto', display: files.length === 0 ? 'none' : 'flex' }}
-            >
-                ? "border-primary bg-primary/5 shadow-lg"
-                : "border-border hover:border-primary/10 hover:shadow-md"
-            }`}
-            style={{ zIndex: 2, minHeight: 0, height: 'auto' }}
-          >
-          <Upload className="h-16 w-16 text-muted-foreground mb-4" />
+          onChange={handleFileSelect}
+          className="hidden"
+          id="file-upload"
+        />
 
-          {/* File Type Tabs */}
-          <div className="flex gap-2 mb-4">
+        <label
+          htmlFor="file-upload"
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          className={`border-2 border-dashed rounded-lg p-3 text-center transition-all min-h-[80px] flex flex-col items-center justify-center cursor-pointer select-none ${
+            isDragging
+              ? "border-primary bg-primary/5 shadow-lg"
+              : "border-border hover:border-primary/10 hover:shadow-md"
+          }`}
+          style={{ zIndex: 2 }}
+        >
+          <Upload className="h-10 w-10 text-muted-foreground mb-2" />
+
+          {/* File Type Tabs (compact) */}
+          <div className="flex gap-2 mb-2">
             {fileTypes.map((type) => (
               <button
                 key={type}
                 onClick={(e) => { e.stopPropagation(); setActiveType(type); }}
-                className={`px-3 py-1 rounded-full text-sm transition-colors ${
+                className={`px-2 py-1 rounded-full text-xs transition-colors ${
                   activeType === type
                     ? "bg-primary/20 text-primary border border-primary/50"
                     : "bg-secondary text-muted-foreground hover:text-foreground"
@@ -107,14 +107,14 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
             ))}
           </div>
 
-          <p className="text-foreground mb-2 font-semibold">
-            Drag & drop files here, or click anywhere to select
+          <p className="text-foreground mb-1 font-medium text-sm">
+            Drag & drop files here, or click to select
           </p>
-          <p className="text-sm text-muted-foreground mb-4">
-            Supports common image, video, SVG, and EPS formats. Max 500 files.
+          <p className="text-xs text-muted-foreground mb-2">
+            Supports image, video, SVG, EPS. Max 500 files.
           </p>
 
-          <div className="pointer-events-none">
+          <div>
             <Button variant="outline" asChild className="cursor-pointer">
               <span>Select Files</span>
             </Button>
