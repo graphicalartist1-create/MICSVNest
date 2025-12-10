@@ -38,9 +38,9 @@ interface GenerationControlsProps {
 }
 
 const platforms = [
+  { id: "all", name: "All microstock", icon: "sparkles" },
   { id: "adobe", name: "Adobe Stock", icon: "adobe" },
   { id: "shutterstock", name: "Shutterstock", icon: "St" },
-  { id: "istock", name: "iStock", icon: "istock" },
   { id: "freepik", name: "Freepik", icon: "freepik" },
   { id: "vecteezy", name: "Vecteezy", icon: "vecteezy" },
   { id: "pond5", name: "Pond5", icon: "pond5" },
@@ -48,6 +48,13 @@ const platforms = [
 
 const PlatformIcon = ({ icon }: { icon: string }) => {
   switch (icon) {
+    case "sparkles":
+      return (
+        <svg viewBox="0 0 24 24" className="h-5 w-5 mx-auto" fill="none">
+          <path d="M12 2l1.5 3.5L17 7l-3.5 1.5L12 12l-1.5-3.5L7 7l3.5-1.5L12 2z" fill="currentColor" opacity="0.9" />
+          <path d="M5 13l.8 1.8L7.5 16l-1.7.7L5 18l-.8-1.3L2.5 16l1.7-.2L5 13z" fill="currentColor" opacity="0.6" />
+        </svg>
+      );
     case "adobe":
       return (
         <svg viewBox="0 0 24 24" className="h-5 w-5 mx-auto" fill="none">
@@ -165,18 +172,18 @@ const GenerationControls = ({ settings, onSettingsChange }: GenerationControlsPr
                         key={platform.id}
                         onClick={() => updateSetting("platform", platform.id)}
                         aria-pressed={active}
-                        className={`flex flex-col items-center gap-2 justify-center p-3 rounded-lg transition-all cursor-pointer select-none min-h-[72px] ${
+                        className={`flex flex-col items-center gap-2 justify-center p-2 rounded-lg transition-all cursor-pointer select-none min-h-[72px] ${
                           active
-                            ? "border border-primary bg-primary/5 shadow-[0_0_0_4px_rgba(16,185,129,0.06)]"
-                            : "border border-border bg-card hover:shadow-md"
+                            ? "border-2 border-cyan-400 bg-[#052328] shadow-[0_0_0_6px_rgba(34,211,238,0.06)]"
+                            : "border border-[#232b30] bg-[#0b1013] hover:shadow-md"
                         }`}
                       >
                         <div className={`h-12 w-12 rounded-md flex items-center justify-center ${
-                          active ? "bg-primary text-primary-foreground" : "bg-[#2f3a3f] text-[--muted-foreground]"
+                          active ? "bg-cyan-400 text-[#002426]" : "bg-[#232b30] text-[#9fb6c5]"
                         }`}>
                           <PlatformIcon icon={platform.icon} />
                         </div>
-                        <div className={`text-xs font-medium ${active ? "text-primary" : "text-muted-foreground"}`}>
+                        <div className={`text-xs font-medium ${active ? "text-cyan-300" : "text-muted-foreground"}`}>
                           {platform.name.split(' ')[0]}
                         </div>
                       </button>
