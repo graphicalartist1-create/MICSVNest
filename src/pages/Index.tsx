@@ -192,39 +192,6 @@ const Index = () => {
     <div className="bg-background">
       <Header />
       
-      {/* Progress Bar Container */}
-      {showProgressBar && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 border-b border-border">
-          <div className="px-6 py-4">
-            <div className="max-w-[1800px] mx-auto flex items-center justify-between gap-4">
-              <div className="flex-1">
-                <div className="mb-2 flex items-center justify-between">
-                  <span className="text-sm font-medium text-foreground">Processing files: {generationProgress}%...</span>
-                </div>
-                <div className="w-full bg-secondary/30 h-2 rounded-full overflow-hidden">
-                  <div 
-                    style={{ width: `${generationProgress}%` }} 
-                    className="h-2 bg-cyan-400 transition-all duration-300 rounded-full"
-                  />
-                </div>
-              </div>
-              <button
-                onClick={handleStopGeneration}
-                className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-medium transition-colors flex-shrink-0"
-              >
-                Stop
-              </button>
-              <button
-                onClick={() => setShowProgressBar(false)}
-                className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-medium transition-colors flex-shrink-0"
-              >
-                Processing...
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-      
       <main className="pt-20 px-6">
         <div className="flex gap-6 max-w-[1800px] mx-auto">
           {/* Left Sidebar - Generation Controls */}
@@ -234,6 +201,35 @@ const Index = () => {
 
           {/* Main Content */}
           <div className="flex-1 space-y-4">
+            {/* Progress Bar Container - Now in flow */}
+            {showProgressBar && (
+              <div className="w-full bg-background border border-border rounded-lg p-4">
+                <div className="flex items-center justify-between gap-4 mb-3">
+                  <span className="text-sm font-medium text-foreground">Processing files: {generationProgress}%...</span>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleStopGeneration}
+                      className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-medium transition-colors"
+                    >
+                      Stop
+                    </button>
+                    <button
+                      onClick={() => setShowProgressBar(false)}
+                      className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-medium transition-colors"
+                    >
+                      Processing...
+                    </button>
+                  </div>
+                </div>
+                <div className="w-full bg-secondary/30 h-2 rounded-full overflow-hidden">
+                  <div 
+                    style={{ width: `${generationProgress}%` }} 
+                    className="h-2 bg-cyan-400 transition-all duration-300 rounded-full"
+                  />
+                </div>
+              </div>
+            )}
+            
             <FileUpload
               files={files}
               onFilesChange={setFiles}
