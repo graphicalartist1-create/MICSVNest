@@ -1,12 +1,64 @@
 import { Calendar, MessageCircle, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 const Header = () => {
-  const handleSignIn = () => {
-    // Replace this with your real sign-in logic (auth redirect, popup, etc.)
-    // For now we log to console so the click can be observed during testing.
-    console.log("Sign in with Google clicked");
-    // Example: window.location.href = '/auth/google';
+  const [signingIn, setSigningIn] = useState(false);
+
+  const handleCredentialResponse = (response: any) => {
+    if (response?.credential) {
+      try {
+        const base64Url = response.credential.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map((c: string) => {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        const userData = JSON.parse(jsonPayload);
+        localStorage.setItem('googleAuth:token', response.credential);
+        localStorage.setItem('googleAuth:user', JSON.stringify(userData));
+        // simple feedback
+        alert(`Welcome ${userData.name || 'user'}!`);
+      } catch (err) {
+        console.error('Failed to process Google credential', err);
+        alert('Sign-in succeeded but response could not be processed.');
+      }
+    }
+    setSigningIn(false);
+  };
+
+  const handleSignIn = async () => {
+    setSigningIn(true);
+    try {
+      if (!window.google) {
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+        await new Promise<void>((resolve, reject) => {
+          script.onload = () => resolve();
+          script.onerror = () => reject(new Error('Google Identity SDK failed to load'));
+        });
+      }
+
+      if (window.google?.accounts?.id) {
+        window.google.accounts.id.initialize({
+          client_id: '566319724872-kn7kqd58poci11m9q3v64r8ltk5ifbi4.apps.googleusercontent.com',
+          callback: handleCredentialResponse,
+        });
+
+        // Show the One Tap prompt or account chooser
+        window.google.accounts.id.prompt();
+      } else {
+        alert('Google Identity Services not available.');
+        setSigningIn(false);
+      }
+    } catch (error) {
+      console.error('Google sign-in error', error);
+      alert('Failed to start Google sign-in.');
+      setSigningIn(false);
+    }
   };
 
   return (
