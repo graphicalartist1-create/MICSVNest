@@ -66,24 +66,34 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating }
 
       {/* Upload Area */}
       <div className="p-4 flex-1">
-        <div
+        <input
+          type="file"
+          multiple
+          accept="image/*,video/*,.svg,.eps"
+          onChange={handleFileSelect}
+          className="hidden"
+          id="file-upload"
+        />
+
+        <label
+          htmlFor="file-upload"
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          className={`border-2 border-dashed rounded-lg p-8 text-center transition-all h-full min-h-[300px] flex flex-col items-center justify-center ${
+          className={`border-2 border-dashed rounded-lg p-8 text-center transition-all h-full min-h-[300px] flex flex-col items-center justify-center cursor-pointer select-none ${
             isDragging
-              ? "border-primary bg-primary/5"
-              : "border-border hover:border-muted-foreground"
+              ? "border-primary bg-primary/5 shadow-lg"
+              : "border-border hover:border-primary/10 hover:shadow-md"
           }`}
         >
-          <Upload className="h-12 w-12 text-muted-foreground mb-4" />
-          
+          <Upload className="h-16 w-16 text-muted-foreground mb-4" />
+
           {/* File Type Tabs */}
           <div className="flex gap-2 mb-4">
             {fileTypes.map((type) => (
               <button
                 key={type}
-                onClick={() => setActiveType(type)}
+                onClick={(e) => { e.stopPropagation(); setActiveType(type); }}
                 className={`px-3 py-1 rounded-full text-sm transition-colors ${
                   activeType === type
                     ? "bg-primary/20 text-primary border border-primary/50"
@@ -95,27 +105,19 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating }
             ))}
           </div>
 
-          <p className="text-foreground mb-2">
-            Drag & drop files here, or click to select
+          <p className="text-foreground mb-2 font-semibold">
+            Drag & drop files here, or click anywhere to select
           </p>
           <p className="text-sm text-muted-foreground mb-4">
             Supports common image, video, SVG, and EPS formats. Max 500 files.
           </p>
 
-          <input
-            type="file"
-            multiple
-            accept="image/*,video/*,.svg,.eps"
-            onChange={handleFileSelect}
-            className="hidden"
-            id="file-upload"
-          />
-          <label htmlFor="file-upload">
+          <div className="pointer-events-none">
             <Button variant="outline" asChild className="cursor-pointer">
               <span>Select Files</span>
             </Button>
-          </label>
-        </div>
+          </div>
+        </label>
       </div>
 
       {/* API Warning */}

@@ -159,19 +159,24 @@ const GenerationControls = ({ settings, onSettingsChange }: GenerationControlsPr
                 </label>
                 <div className="grid grid-cols-3 gap-2">
                   {platforms.map((platform) => (
-                    <button
-                      key={platform.id}
-                      onClick={() => updateSetting("platform", platform.id)}
-                      className={`p-3 rounded-lg border transition-all cursor-pointer ${
-                        settings.platform === platform.id
-                          ? "border-primary bg-primary/10"
-                          : "border-border hover:border-muted-foreground"
-                      }`}
-                    >
-                      <div className="text-center text-muted-foreground">
-                        <PlatformIcon icon={platform.icon} />
-                      </div>
-                    </button>
+                      <button
+                        key={platform.id}
+                        onClick={() => updateSetting("platform", platform.id)}
+                        className={`p-2 rounded-lg border transition-all cursor-pointer flex flex-col items-center gap-2 text-center ${
+                          settings.platform === platform.id
+                            ? "border-primary bg-primary/5 shadow-inner"
+                            : "border-border bg-card hover:border-primary/20"
+                        }`}
+                      >
+                        <div className={`h-10 w-10 rounded-md flex items-center justify-center ${
+                          settings.platform === platform.id ? "bg-primary text-primary-foreground" : "bg-muted/10 text-muted-foreground"
+                        }`}>
+                          <PlatformIcon icon={platform.icon} />
+                        </div>
+                        <div className="text-xs font-medium text-muted-foreground">
+                          {platform.name === 'Shutterstock' ? 'St' : platform.name.split(' ')[0]}
+                        </div>
+                      </button>
                   ))}
                 </div>
               </div>
