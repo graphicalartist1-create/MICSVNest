@@ -69,49 +69,75 @@ const ApiSecretsModal: React.FC = () => {
   const handleGoogleSignIn = async () => {
     setGoogleSignInLoading(true);
     try {
-      // Initialize Google Sign-In SDK
+      // Load Google Sign-In SDK if not already loaded
       if (!window.google) {
-        // Load the Google Sign-In library
         const script = document.createElement('script');
         script.src = 'https://accounts.google.com/gsi/client';
         script.async = true;
+        script.defer = true;
+        
+        script.onload = () => {
+          initializeGoogleSignIn();
+        };
+        
         document.head.appendChild(script);
-        
-        // Wait for script to load
-        await new Promise(resolve => {
-          script.onload = resolve;
-        });
-      }
-
-      // Trigger Google Sign-In
-      if (window.google?.accounts?.id) {
-        window.google.accounts.id.initialize({
-          client_id: '566319724872-kn7kqd58poci11m9q3v64r8ltk5ifbi4.apps.googleusercontent.com',
-          callback: (response: any) => {
-            if (response.credential) {
-              // Decode JWT token to get user info
-              const base64Url = response.credential.split('.')[1];
-              const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-              const jsonPayload = decodeURIComponent(atob(base64).split('').map((c: string) => {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-              }).join(''));
-              
-              const userData = JSON.parse(jsonPayload);
-              
-              // You can save user info if needed
-              console.log('Google Sign-In successful:', userData);
-              alert(`Welcome ${userData.name}!`);
-            }
-          },
-        });
-        
-        window.google.accounts.id.prompt();
+      } else {
+        initializeGoogleSignIn();
       }
     } catch (error) {
       console.error('Google Sign-In error:', error);
       alert('Failed to sign in with Google. Please try again.');
-    } finally {
       setGoogleSignInLoading(false);
+    }
+  };
+
+  const initializeGoogleSignIn = () => {
+    if (!window.google?.accounts?.id) {
+      setGoogleSignInLoading(false);
+      alert('Google Sign-In SDK not loaded. Please try again.');
+      return;
+    }
+
+    window.google.accounts.id.initialize({
+      client_id: '566319724872-kn7kqd58poci11m9q3v64r8ltk5ifbi4.apps.googleusercontent.com',
+      callback: handleCredentialResponse,
+    });
+
+    // Render the sign-in button
+    const container = document.getElementById('google-signin-button');
+    if (container && !container.innerHTML) {
+      window.google.accounts.id.renderButton(container, {
+        theme: 'dark',
+        size: 'large',
+        text: 'signin_with',
+      });
+    }
+    
+    setGoogleSignInLoading(false);
+  };
+
+  const handleCredentialResponse = (response: any) => {
+    if (response.credential) {
+      try {
+        // Decode JWT token to get user info
+        const base64Url = response.credential.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map((c: string) => {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        
+        const userData = JSON.parse(jsonPayload);
+        
+        // Save the credential for use with Google API
+        localStorage.setItem(`googleAuth:token`, response.credential);
+        localStorage.setItem(`googleAuth:user`, JSON.stringify(userData));
+        
+        console.log('Google Sign-In successful:', userData);
+        alert(`Welcome ${userData.name}!`);
+      } catch (error) {
+        console.error('Error processing credential:', error);
+        alert('Error processing sign-in. Please try again.');
+      }
     }
   };
 
@@ -194,14 +220,17 @@ const ApiSecretsModal: React.FC = () => {
               </div>
 
               {selected === "google" && (
-                <Button 
-                  onClick={handleGoogleSignIn}
-                  disabled={googleSignInLoading}
-                  className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-medium h-7 text-xs"
-                  size="sm"
-                >
-                  {googleSignInLoading ? "Signing..." : "Sign with Google"}
-                </Button>
+                <div className="space-y-2">
+                  <Button 
+                    onClick={handleGoogleSignIn}
+                    disabled={googleSignInLoading}
+                    className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-medium h-7 text-xs"
+                    size="sm"
+                  >
+                    {googleSignInLoading ? "Loading..." : "Sign in with Google"}
+                  </Button>
+                  <div id="google-signin-button" className="flex justify-center"></div>
+                </div>
               )}
 
               <div className="bg-[#161b1f] rounded border border-[#232b30] p-2 max-h-32 overflow-y-auto">
