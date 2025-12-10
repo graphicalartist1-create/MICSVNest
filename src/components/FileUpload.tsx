@@ -66,7 +66,7 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
       </div>
 
       {/* Upload Area */}
-      <div className="p-4 flex-1" style={{ position: 'relative' }}>
+        <div className="p-4 flex-1">
         <input
           type="file"
           multiple
@@ -77,23 +77,17 @@ const FileUpload = ({ files, onFilesChange, onGenerate, onExport, isGenerating, 
         />
 
         <label
-          htmlFor="file-upload"
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          className={`border-2 border-dashed rounded-lg p-8 text-center transition-all h-full min-h-[300px] flex flex-col items-center justify-center cursor-pointer select-none ${
-            isDragging
-              ? "border-primary bg-primary/5 shadow-lg"
-              : "border-border hover:border-primary/10 hover:shadow-md"
-          }`}
-          style={{ zIndex: 2 }}
-        >
-                  {/* Hide any direct child divs with red background (debug/test overlays) */}
-                  <style>{`
-                    .bg-card > div[style*='background-color: red'] {
-                      display: none !important;
-                    }
-                  `}</style>
+            htmlFor="file-upload"
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={`border-2 border-dashed rounded-lg p-4 text-center transition-all min-h-[120px] flex flex-col items-center justify-center cursor-pointer select-none ${
+              isDragging
+                ? "border-primary bg-primary/5 shadow-lg"
+                : "border-border hover:border-primary/10 hover:shadow-md"
+            }`}
+            style={{ zIndex: 2 }}
+          >
           <Upload className="h-16 w-16 text-muted-foreground mb-4" />
 
           {/* File Type Tabs */}
