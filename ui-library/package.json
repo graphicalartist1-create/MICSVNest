@@ -1,0 +1,34 @@
+{
+  "name": "@csvnest/ui-library",
+  "version": "1.0.0",
+  "description": "Reusable metadata management UI components library",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "keywords": [
+    "metadata",
+    "ui-components",
+    "file-upload",
+    "react",
+    "typescript",
+    "tailwindcss"
+  ],
+  "author": "CSVnest Team",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "typescript": ">=4.5.0"
+  },
+  "dependencies": {
+    "lucide-react": "^0.263.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "typescript": "^5.0.0"
+  }
+}
