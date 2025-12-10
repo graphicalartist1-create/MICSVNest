@@ -3,10 +3,34 @@ import { Button } from "@/components/ui/button";
 
 const Header = () => {
   const handleSignIn = () => {
-    // Replace this with your real sign-in logic (auth redirect, popup, etc.)
-    // For now we log to console so the click can be observed during testing.
-    console.log("Sign in with Google clicked");
-    // Example: window.location.href = '/auth/google';
+    // Initialize Google Sign-In if SDK is loaded
+    if (window.google?.accounts?.id) {
+      window.google.accounts.id.initialize({
+        client_id: '566319724872-kn7kqd58poci11m9q3v64r8ltk5ifbi4.apps.googleusercontent.com',
+        callback: (response: any) => {
+          if (response.credential) {
+            try {
+              const base64Url = response.credential.split('.')[1];
+              const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+              const jsonPayload = decodeURIComponent(atob(base64).split('').map((c: string) => {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+              }).join(''));
+              const userData = JSON.parse(jsonPayload);
+              localStorage.setItem('googleAuth:token', response.credential);
+              localStorage.setItem('googleAuth:user', JSON.stringify(userData));
+              window.dispatchEvent(new Event('storage'));
+              alert(`Welcome ${userData.name}!`);
+            } catch (error) {
+              console.error('Error processing credential:', error);
+              alert('Error processing sign-in. Please try again.');
+            }
+          }
+        },
+      });
+      window.google.accounts.id.prompt();
+    } else {
+      alert('Google Sign-In not loaded. Please refresh the page.');
+    }
   };
 
   return (
