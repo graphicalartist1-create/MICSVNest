@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Settings, Key, ChevronDown, ChevronUp, Type } from "lucide-react";
+import { Settings, Type } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ApiSecretsModal from "./ApiSecretsModal";
 import { Slider } from "@/components/ui/slider";

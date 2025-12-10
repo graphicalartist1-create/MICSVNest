@@ -26,14 +26,18 @@ export default function ApiSecretsModal() {
 
   useEffect(() => {
     const data: Record<string, string[]> = {};
-    providers.forEach((p) => {
-      try {
-        const v = localStorage.getItem(`apiKeys:${p.id}`);
-        data[p.id] = v ? JSON.parse(v) : [];
-      } catch {
-        data[p.id] = [];
-      }
-    });
+    if (typeof window !== "undefined" && window.localStorage) {
+      providers.forEach((p) => {
+        try {
+          const v = localStorage.getItem(`apiKeys:${p.id}`);
+          data[p.id] = v ? JSON.parse(v) : [];
+        } catch {
+          data[p.id] = [];
+        }
+      });
+    } else {
+      providers.forEach((p) => (data[p.id] = []));
+    }
     setStored(data);
   }, []);
 
